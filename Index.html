@@ -1,0 +1,1830 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Generatore Report Gerarchici</title>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<!-- PDF Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+ :root{
+    --primary: #0ea5a4;
+    --primary-dark: #0f766e;
+    --bg: #f8fafc;
+    --panel: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --step-inactive: #cbd5e1;
+    --danger: #ef4444;
+    --success: #22c55e;
+    
+    /* Area Colors */
+    --col-rows: #0ea5a4; /* Turchese */
+    --col-cols: #8b5cf6; /* Viola */
+    --col-vals: #f97316; /* Arancio */
+ }
+ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background: var(--bg); color: var(--text); padding-bottom: 80px;}
+ 
+ /* --- STICKY PROGRESS BAR --- */
+ .stepper-container {
+    position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(5px); border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); padding: 15px 0;
+ }
+ .stepper {
+    max-width: 1000px; margin: auto; display: flex; justify-content: space-between; position: relative; padding: 0 40px;
+ }
+ .stepper::before {
+    content:''; position: absolute; top: 50%; left: 60px; right: 60px; height: 2px; background: var(--step-inactive); z-index: -1; transform: translateY(-50%);
+ }
+ .step-item {
+    background: var(--bg); padding: 0 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s;
+ }
+ .step-circle {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--step-inactive); color: white;
+    display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; transition: 0.3s; border: 2px solid var(--bg);
+ }
+ .step-label { font-size: 13px; font-weight: 700; margin-top: 8px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;}
+ 
+ .step-item.active .step-circle { background: var(--primary); box-shadow: 0 0 0 4px rgba(14, 165, 164, 0.2); transform: scale(1.1); }
+ .step-item.completed .step-circle { background: var(--primary-dark); }
+ .step-item.active .step-label, .step-item.completed .step-label { color: var(--primary-dark); }
+
+ /* --- LAYOUT --- */
+ .main-container { max-width: 1600px; margin: 30px auto; padding: 0 20px; }
+ .accordion-card {
+    background: var(--panel); border-radius: 12px; border: 1px solid var(--border);
+    margin-bottom: 25px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    transition: all 0.4s ease;
+ }
+ .accordion-header {
+    padding: 20px 25px; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid transparent; transition: 0.3s;
+ }
+ .accordion-header:hover { background: #f8fafc; }
+ .accordion-header h2 { margin: 0; font-size: 18px; color: var(--text); font-weight: 800; display: flex; align-items: center; gap: 12px;}
+ .accordion-status { font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;}
+ 
+ .accordion-card.collapsed .accordion-body { display: none; }
+ .accordion-card.expanded { border-color: var(--primary); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+ .accordion-card.expanded .accordion-header { border-bottom: 1px solid var(--border); background: #f0fdfa; color: var(--primary-dark); }
+ .accordion-body { padding: 25px; animation: fadeIn 0.4s ease-out; }
+ @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+ /* --- COMPONENTS --- */
+ .btn-group { display: flex; gap: 12px; margin-top: 25px; justify-content: flex-end; }
+ button { background: var(--primary); color: white; border: none; padding: 10px 22px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+ button:hover { filter: brightness(90%); transform: translateY(-1px); }
+ button:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
+ button.secondary { background: #fff; color: #64748b; border: 1px solid #cbd5e1; box-shadow: none;}
+ button.secondary:hover { background: #f1f5f9; color: var(--text); border-color: #94a3b8; }
+ button.action { background: #f59e0b; }
+ button.danger { background: #ef4444; color: white; border: none; }
+ button.pdf { background: #ef4444; }
+
+ .file-drop-zone { border: 2px dashed #cbd5e1; background: #f8fafc; padding: 50px; text-align: center; border-radius: 12px; position: relative; transition: 0.2s; cursor: pointer;}
+ .file-drop-zone:hover { border-color: var(--primary); background: #f0fdfa; }
+ .file-drop-zone input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor: pointer; }
+ 
+ .lists { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 25px;}
+ .list-container { flex: 1; min-width: 280px; background: #fff; border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; height: 380px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden;}
+ .list-header { padding: 12px 15px; background: #f8fafc; font-size: 12px; font-weight: 800; border-bottom: 1px solid var(--border); color: #475569; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
+ .list { padding: 12px; flex-grow: 1; overflow-y: auto; background: #fff; }
+ 
+ /* --- DISTINCTIVE AREAS --- */
+ #rows-container { border-left: 6px solid var(--col-rows); }
+ #cols-container { border-top: 6px solid var(--col-cols); }
+ #vals-container { border-bottom: 6px solid var(--col-vals); }
+
+ .item { padding: 8px 10px; margin-bottom: 8px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; cursor: grab; font-size: 12px; display: flex; align-items: center; gap: 10px; user-select: none; transition: 0.1s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
+ .item:hover { border-color: var(--primary); transform: translateY(-1px); }
+ .item b { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #334155; }
+ 
+ .item-controls { display: flex; align-items: center; gap: 3px; flex-wrap: nowrap; white-space: nowrap; }
+ .item-controls label { font-size: 10px; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; border: 1px solid #cbd5e1; cursor: pointer; color: #64748b; display: flex; align-items: center; gap: 3px; font-weight: 600; min-width: max-content;}
+ .item-controls label:hover { border-color: var(--primary); color: var(--primary-dark); background: #f0fdfa; }
+ .item-controls input { margin: 0; width: 12px; height: 12px; accent-color: var(--primary); }
+ .item select { font-size: 11px; padding: 3px; border: 1px solid #cbd5e1; border-radius: 4px; background: #f8fafc; color: #334155; font-weight: 600;}
+
+ .remove-btn { color: #ef4444; font-weight: bold; cursor: pointer; padding: 2px 6px; border-radius: 4px; font-size: 14px; margin-left: 5px; }
+ .remove-btn:hover { background: #fee2e2; }
+
+ /* STYLE & PREVIEW */
+ .style-bar { display: flex; gap: 15px; align-items: center; background: #f8fafc; padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; flex-wrap: wrap;}
+ .opt-group { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #475569;}
+ input[type="color"] { border: none; width: 28px; height: 28px; cursor: pointer; background: none; vertical-align: middle;}
+ input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; }
+ input[type="number"] { width: 40px; padding: 4px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; text-align: center; }
+
+ .preview-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); background: white; min-height: 200px; max-height: 600px;}
+ 
+ /* EXECUTIVE TABLE STYLES */
+ table.preview { width: 100%; border-collapse: collapse; font-size: 12px; }
+ table.preview th, table.preview td { border: 1px solid #e2e8f0; padding: 10px 12px; text-align: right; white-space: pre-wrap; }
+ table.preview th { text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; text-align: center; font-weight: 700; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
+ 
+ /* Zebra & Hover */
+ table.preview tr:nth-child(even) { background-color: #f8fafc; }
+ table.preview tr:hover td { background-color: #e0f2fe; transition: background-color 0.1s; }
+ 
+ .row-subtotal { border-top: 2px solid #cbd5e1; font-weight: 700; background-color: #f1f5f9 !important; }
+ .row-grand-total { font-weight: 800; border-top: 3px double #94a3b8 !important; font-size: 13px; text-transform: uppercase; background-color: #e2e8f0; }
+ 
+ /* FIX 2: Limitare larghezza anteprima dati */
+ #miniPreviewTable td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+ }
+
+ /* MODALS & ALERTS */
+ .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(3px); }
+ .modal-content { background-color: #fff; margin: 3% auto; border-radius: 16px; width: 80%; max-width: 900px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; animation: slideUp 0.3s ease-out;}
+ @keyframes slideUp { from {transform: translateY(50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+ .modal-header { padding: 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+ .modal-body { padding: 30px; max-height: 75vh; overflow-y: auto; line-height: 1.6; font-size: 15px; color: #334155; }
+ .modal-body h3 { color: var(--primary); margin-top: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+ .close-btn { font-size: 28px; cursor: pointer; color: #94a3b8; transition: 0.2s;} .close-btn:hover { color: var(--danger); }
+ .tag { display: inline-block; background: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; color: #475569; margin-right: 5px; border: 1px solid #cbd5e1;}
+ .highlight { background-color: #fffbeb; padding: 2px 5px; border-radius: 3px; color: #b45309; font-weight: 500; }
+ 
+ .badge-neutral { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+ .badge-success { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
+ .config-table { width: 100%; border-collapse: collapse; font-size: 12px; background: white;}
+ .config-table td { border: 1px solid var(--border); padding: 8px; }
+ .config-instr { font-weight: 700; color: #0f766e; font-size: 14px; margin-bottom: 6px; }
+ 
+ .sep-v { width: 1px; height: 16px; background: #cbd5e1; margin: 0 5px; }
+
+ /* Data Confirmation Box */
+ .data-confirm-box {
+    background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 20px;
+    margin-top: 20px; color: #166534; display: none;
+ }
+ .data-confirm-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;
+ }
+ .data-stat {
+    background: white; padding: 10px; border-radius: 6px; border: 1px solid #bbf7d0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-align: center;
+ }
+ .data-stat b { display: block; font-size: 18px; color: var(--primary-dark); }
+ .data-stat span { font-size: 12px; text-transform: uppercase; color: #64748b; font-weight: 700; }
+
+ /* Smart Advisor */
+ .advisor-box {
+    background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569;
+    padding: 10px 15px; border-radius: 8px; margin-bottom: 15px;
+    font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px;
+    transition: all 0.3s;
+ }
+ .advisor-warn { background: #fffbeb; border-color: #fcd34d; color: #b45309; }
+ .advisor-good { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+ .advisor-icon { font-size: 18px; }
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<div class="stepper-container">
+    <div class="stepper">
+        <div class="step-item active" onclick="app.goToStep(1)">
+            <div class="step-circle">1</div>
+            <div class="step-label">Dati</div>
+        </div>
+        <div class="step-item" onclick="app.goToStep(2)">
+            <div class="step-circle">2</div>
+            <div class="step-label">Struttura Report</div>
+        </div>
+        <div class="step-item" onclick="app.goToStep(3)">
+            <div class="step-circle">3</div>
+            <div class="step-label">Output</div>
+        </div>
+    </div>
+</div>
+
+<div class="main-container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
+        <div>
+            <h1 style="margin:0; font-size: 26px; color: #0f172a; font-weight: 800; letter-spacing: -0.5px;">🗂️ Generatore Report Gerarchici</h1>
+            <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">Trasforma file CSV complessi in report gerarchici professionali.</p>
+        </div>
+        <button id="openHelpBtn" class="secondary" style="padding: 8px 16px; font-size: 13px;">❓ Guida Completa</button>
+    </div>
+
+    <!-- STEP 1: DATI -->
+    <div id="step1-card" class="accordion-card expanded">
+        <div class="accordion-header" onclick="app.goToStep(1)">
+            <h2>📂 1. Caricamento Dati</h2>
+            <span class="accordion-status" id="status-step1" style="display:none">✅ Dati Pronti</span>
+        </div>
+        <div class="accordion-body">
+            <div class="file-drop-zone" id="dropZone">
+                <input id="file" type="file" accept=".csv,text/csv">
+                <div style="font-size: 48px; margin-bottom: 15px;">📄</div>
+                <div class="file-msg" style="font-weight: 700; color: #334155; font-size: 18px;">Trascina qui il file CSV</div>
+                <div style="font-size: 13px; color: #94a3b8; margin-top: 5px;">oppure clicca per selezionare dal computer</div>
+            </div>
+
+            <div id="csvConfigSection" style="display: none; margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
+                <h3 style="color: var(--primary-dark); margin: 0 0 20px 0; font-size: 16px;">⚙️ Configurazione Intestazioni</h3>
+                
+                <p class="config-instr">1. Seleziona le righe dei nomi colonna:</p>
+                <!-- FIX 1: Aumentata altezza box intestazioni -->
+                <div style="max-height: 400px; min-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 25px;">
+                    <table id="headTable" class="config-table" style="margin-top:0;"></table>
+                </div>
+                
+                <p class="config-instr">2. Deseleziona eventuali righe finali "sporche" (totali, note, ecc):</p>
+                <!-- FIX 1: Aumentata altezza box righe escluse -->
+                <div style="max-height: 300px; min-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+                    <table id="tailTable" class="config-table" style="margin-top:0;"></table>
+                </div>
+
+                <div class="btn-group">
+                    <button id="resetFileBtn" class="secondary" onclick="location.reload()">🔄 Carica Nuovo File</button>
+                    <button id="confirmConfigBtn">Conferma Dati ➔</button>
+                </div>
+            </div>
+
+            <!-- EXPLICIT DATA CONFIRMATION BOX -->
+            <div id="dataConfirmationBox" class="data-confirm-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #bbf7d0; padding-bottom:10px; margin-bottom:15px;">
+                    <h3 style="margin:0; font-size:18px;">✅ Dati Pronti e Verificati</h3>
+                    <div style="font-size:13px; background:white; padding:4px 10px; border-radius:15px; border:1px solid #bbf7d0;">
+                        <span id="confFileName" style="font-weight:bold;"></span>
+                    </div>
+                </div>
+                
+                <div class="data-confirm-grid">
+                    <div class="data-stat"><b id="statRows">0</b><span>Righe Incluse</span></div>
+                    <div class="data-stat"><b id="statCols">0</b><span>Colonne</span></div>
+                    <div class="data-stat"><b id="statHead">0</b><span>Righe Intest.</span></div>
+                    <div class="data-stat"><b id="statExcl">0</b><span>Righe Escluse</span></div>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <p style="font-size:12px; font-weight:700; color:#15803d; margin-bottom:5px;">ANTEPRIMA DATI PULITI (Prime 3 righe):</p>
+                    <div style="background:white; border:1px solid #bbf7d0; border-radius:6px; padding:10px; font-size:11px; overflow-x:auto;">
+                         <table id="miniPreviewTable" class="preview" style="width:100%; margin:0;"></table>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="secondary" onclick="location.reload()">🔄 Annulla</button>
+                    <button onclick="app.goToStep(2)">Procedi alla Costruzione ➔</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- STEP 2: COSTRUZIONE & ANTEPRIMA -->
+    <div id="step2-card" class="accordion-card collapsed">
+        <div class="accordion-header" onclick="app.goToStep(2)">
+            <h2>🏗️ 2. Costruzione & Anteprima</h2>
+            <div id="validationBadge" class="badge-neutral accordion-status" style="display: flex; align-items: center; gap: 5px;">
+                ⚪ In attesa di configurazione
+            </div>
+        </div>
+        <div class="accordion-body">
+            
+            <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; color: #475569; font-weight: 500;">💡 Trascina i campi. L'anteprima è automatica.</span>
+                <div>
+                     <button id="saveConfigBtn" class="secondary" style="font-size: 13px; padding: 8px 14px; margin-right: 5px;" title="Salva la configurazione attuale su file">💾 Salva Modello</button>
+                     <button id="loadConfigBtn" class="secondary" style="font-size: 13px; padding: 8px 14px; margin-right: 5px;" onclick="document.getElementById('configInput').click()" title="Carica una configurazione salvata">📂 Carica Modello</button>
+                     <input type="file" id="configInput" accept=".json" style="display: none"> 
+                     <button id="resetFieldsBtn" class="secondary" style="font-size: 13px; padding: 8px 14px; margin-right: 5px;">🧹 Svuota Campi</button>
+                     <button id="mergeBtn" class="action" style="font-size: 13px; padding: 8px 14px;">🔗 Unisci Selezionati</button>
+                </div>
+            </div>
+
+            <div class="lists">
+                <!-- AVAILABLE -->
+                <div class="list-container">
+                    <div class="list-header">
+                        Disponibili
+                        <input type="text" id="fieldSearch" placeholder="Cerca..." style="padding:4px 8px; border:1px solid #cbd5e1; border-radius:4px; font-size:11px; width:90px;">
+                    </div>
+                    <div id="available" class="list"></div>
+                </div>
+                <!-- ROWS -->
+                <div id="rows-container" class="list-container">
+                    <div class="list-header" style="color: var(--col-rows);">☰ RIGHE (Gerarchia)</div>
+                    <div id="rows" class="list"></div>
+                </div>
+                <!-- COLS -->
+                <div id="cols-container" class="list-container">
+                    <div class="list-header" style="color: var(--col-cols);">⬌ COLONNE (Opzionale)</div>
+                    <div id="cols" class="list"></div>
+                </div>
+                <!-- VALUES -->
+                <div id="vals-container" class="list-container">
+                    <div class="list-header" style="color: var(--col-vals);">∑ VALORI (Dati)</div>
+                    <div id="values" class="list"></div>
+                </div>
+            </div>
+
+            <!-- SMART ADVISOR BOX -->
+            <div id="smartAdvisor" class="advisor-box">
+                <span class="advisor-icon">💡</span>
+                <span id="advisorText">Trascina i campi 'Righe' per definire la struttura del tuo report.</span>
+            </div>
+
+            <!-- PREVIEW SECTION INTEGRATED -->
+            <div style="margin-top: 30px; border-top: 2px dashed var(--border); padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin:0; font-size: 16px; color: #334155;">👁️ Anteprima Live</h3>
+                    <div class="style-bar" style="margin:0; padding: 8px 15px;">
+                         <div class="opt-group">
+                            <input type="checkbox" id="useColors" checked> <label for="useColors">Colori</label>
+                            <input type="color" id="themeColor" value="#0ea5a4" title="Colore Tema">
+                        </div>
+                        <div class="sep-v"></div>
+                        <div class="opt-group"><input type="checkbox" id="useBorders" checked> <label for="useBorders">Box</label></div>
+                        <div class="sep-v"></div>
+                        
+                        <!-- FIX 3: Gruppo Totali Righe -->
+                        <div class="opt-group" style="background:#f0fdfa; padding:2px 8px; border-radius:4px; border:1px solid #ccfbf1; margin-right:5px;">
+                            <span style="font-size:11px; font-weight:700; color:#0f766e; margin-right:5px;">RIGA:</span>
+                            <input type="checkbox" id="showRowTot"> <label for="showRowTot">Totale</label>
+                            <span style="margin:0 4px; color:#cbd5e1;">|</span>
+                            <input type="checkbox" id="showRowTotPct" title="Calcola % rispetto al totale"> <label for="showRowTotPct">% Incidenza</label>
+                        </div>
+                        <div class="opt-group"><input type="checkbox" id="showGrandTot"> <label for="showGrandTot">Tot. Gen.</label></div>
+
+                        <div class="sep-v"></div>
+                        <div class="opt-group" title="Nasconde le colonne con totale zero"><input type="checkbox" id="hideEmptyCols"> <label for="hideEmptyCols">Nascondi Vuote</label></div>
+                        
+                        <!-- NUMBER FORMATTING -->
+                        <div class="sep-v"></div>
+                        <div class="opt-group" style="background:#e0f2fe; padding:2px 6px; border-radius:4px; border:1px solid #bae6fd;">
+                            <span style="font-size:11px; font-weight:700; color:#0369a1;">NUMERI:</span>
+                            <label style="font-size:11px;">Dec:</label>
+                            <input type="number" id="numDecimals" value="2" min="0" max="4" title="Decimali">
+                            <input type="checkbox" id="useThousandSep" checked> <label for="useThousandSep" title="Separatore Migliaia">1.000</label>
+                            <input type="checkbox" id="useCurrency"> <label for="useCurrency">€</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-wrapper">
+                    <div id="preview">
+                        <div style="padding: 60px; text-align: center; color: #94a3b8;">
+                            <div style="font-size: 40px; margin-bottom: 10px; opacity: 0.5;">📊</div>
+                            Costruisci il report trascinando i campi per vedere l'anteprima.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="secondary" onclick="app.goToStep(1)">⬅ Indietro</button>
+                <button id="goToStep3Btn" disabled onclick="app.goToStep(3)">Procedi all'Export ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: OUTPUT -->
+    <div id="step3-card" class="accordion-card collapsed">
+        <div class="accordion-header" onclick="app.goToStep(3)">
+            <h2>💾 3. Output Finale</h2>
+        </div>
+        <div class="accordion-body">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border);">
+                <div style="font-size: 60px; margin-bottom: 20px;">✅</div>
+                <h3 style="margin-top: 0; color: #1e293b; font-size: 20px;">Il tuo report è pronto!</h3>
+                <p style="color: #64748b; margin-bottom: 30px; text-align: center; max-width: 500px;">
+                    Hai configurato correttamente la struttura. Scegli il formato che preferisci per scaricare il tuo report.
+                </p>
+                
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;">
+                    <input id="outname" value="Report_Executive" style="padding:12px; border:1px solid #cbd5e1; border-radius:8px; width:220px; font-size:14px; outline-color: var(--primary);">
+                    <button id="exportBtn" style="background: var(--primary-dark); padding: 12px 25px; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">📥 Scarica Excel</button>
+                    <button id="exportPdfBtn" class="pdf" style="padding: 12px 25px; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">📄 Scarica PDF</button>
+                </div>
+
+                <button class="secondary" onclick="location.reload()" style="font-size: 12px; margin-top: 20px;">🔄 Nuovo Progetto</button>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- End Main -->
+
+<!-- MODAL HELP DETTAGLIATA -->
+<div id="helpModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>📖 Guida all'uso - Generatore Report</h2>
+      <span class="close-btn">&times;</span>
+    </div>
+    <!-- FIX 4: Aggiornato testo Guida Completa -->
+    <div class="modal-body">
+      <h3>1. Importazione e Pulizia Dati</h3>
+      <ul>
+        <li>Trascina il tuo file <b>.CSV</b>. Seleziona le righe che contengono le intestazioni e deseleziona eventuali righe di coda inutili.</li>
+        <li>Verifica nel box verde di riepilogo che i dati siano stati letti correttamente.</li>
+      </ul>
+
+      <h3>2. Costruzione Report</h3>
+      <ul>
+        <li><b style="color:var(--col-rows)">☰ RIGHE:</b> Trascina qui i campi per raggruppare i dati (es. Agente, Categoria).</li>
+        <li><b style="color:var(--col-cols)">⬌ COLONNE:</b> (Opzionale) Trascina qui un campo per "pivotare" i dati in orizzontale (es. Mesi, Anni).</li>
+        <li><b style="color:var(--col-vals)">∑ VALORI:</b> Trascina qui i dati numerici da calcolare (es. Fatturato).</li>
+      </ul>
+
+      <h3>3. Opzioni Campi (I Flag)</h3>
+      <p>Ogni campo in "Righe" ha dei pulsanti:</p>
+      <ul>
+        <li><span class="tag">V</span> <b>Vuoto se duplicato:</b> Pulisce la visualizzazione nascondendo testi ripetuti.</li>
+        <li><span class="tag">E</span> <b>Espandi:</b> Se spento, mostra solo una riga di sintesi per quel gruppo.
+            <br>• <span class="highlight">SPUNTATO:</span> Mostra l'elenco completo di tutte le righe di dettaglio.
+            <br>• <span class="highlight">NON SPUNTATO:</span> Mostra una sola riga riassuntiva (Sintesi) per quel gruppo.
+        </li>
+        <li><span class="tag">S</span> <b>Subtotale:</b> Aggiunge una riga di totale alla fine del gruppo (visibile solo se il gruppo è espanso e contiene più di una voce).</li>
+        <li><span class="tag">C</span> <b>Compatta:</b> Mette il campo nella stessa colonna del livello superiore.</li>
+        <li><span class="tag">B</span> <b>Grassetto:</b> Evidenzia il testo.</li>
+      </ul>
+
+      <h3>4. Barra degli Strumenti (Anteprima)</h3>
+      <ul>
+        <li><b>Colori / Box:</b> Attiva o disattiva lo stile grafico.</li>
+        <li><b>RIGA (Totale / % Incidenza):</b> Aggiunge alla fine di ogni riga la somma dei valori e/o quanto quella riga pesa sul totale generale.</li>
+        <li><b>Tot. Gen.:</b> Aggiunge la riga finale con la somma di tutto.</li>
+        <li><b>Nascondi Vuote:</b> Nasconde le colonne che hanno valore zero.</li>
+        <li><b>Numeri:</b> Imposta decimali, separatore migliaia e simbolo valuta.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+const app = (() => {
+    let fullArray = [], rawData = [], headers = [];
+    let customMerges = [];
+    const nodes = ["available","rows","cols","values"].reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
+    let currentStep = 1;
+    let loadedFileName = "";
+
+    // --- TOGGLE DEPENDENCY ---
+    const rowTotChk = document.getElementById("showRowTot");
+    const incPctChk = document.getElementById("showRowTotPct");
+    
+    incPctChk.addEventListener('change', () => {
+        if(incPctChk.checked) { rowTotChk.checked = true; renderPreview(); }
+    });
+    rowTotChk.addEventListener('change', () => {
+        if(!rowTotChk.checked) { incPctChk.checked = false; renderPreview(); }
+        else renderPreview();
+    });
+
+    // --- STEP NAVIGATION ---
+    function goToStep(n) {
+        if (n > 1 && rawData.length === 0) return alert("Carica e conferma prima i dati!");
+        if (n > 2 && !validateStructure()) return alert("Definisci Righe e Valori prima di esportare!");
+        
+        currentStep = n;
+        updateUI();
+    }
+
+    function updateUI() {
+        document.querySelectorAll('.step-item').forEach((el, idx) => {
+            const stepNum = idx + 1;
+            el.className = `step-item ${stepNum === currentStep ? 'active' : (stepNum < currentStep ? 'completed' : '')}`;
+        });
+        for(let i=1; i<=3; i++) {
+            const card = document.getElementById(`step${i}-card`);
+            if(i === currentStep) { card.classList.remove('collapsed'); card.classList.add('expanded'); }
+            else { card.classList.add('collapsed'); card.classList.remove('expanded'); }
+        }
+    }
+
+    function validateStructure() {
+        const hasRows = nodes.rows.children.length > 0;
+        const hasCols = nodes.cols.children.length > 0;
+        const hasVals = nodes.values.children.length > 0;
+        const isValid = (hasRows || hasCols) && hasVals;
+        
+        const badge = document.getElementById('validationBadge');
+        const btn = document.getElementById('goToStep3Btn');
+
+        if(isValid) {
+            badge.className = "accordion-status badge-success";
+            badge.innerHTML = "✅ Pronto per Export";
+            btn.disabled = false;
+        } else {
+            badge.className = "accordion-status badge-neutral";
+            badge.innerHTML = "⚪ In attesa di configurazione";
+            btn.disabled = true;
+        }
+        return isValid;
+    }
+
+    // --- SMART ADVISOR LOGIC ---
+    function updateAdvisor() {
+        const hasRows = nodes.rows.children.length > 0;
+        const hasCols = nodes.cols.children.length > 0;
+        const hasVals = nodes.values.children.length > 0;
+        const box = document.getElementById('smartAdvisor');
+        const text = document.getElementById('advisorText');
+        const icon = document.querySelector('.advisor-icon');
+
+        box.className = "advisor-box"; // Reset
+        
+        if (!hasRows && !hasCols && !hasVals) {
+            text.innerText = "Trascina i campi 'Righe' per iniziare a definire la struttura.";
+            icon.innerText = "💡";
+        } else if (!hasRows && hasCols && hasVals) {
+            text.innerText = "⚠️ Hai colonne e valori, ma nessuna riga. Il report mostrerà solo una riga di totali. Aggiungi campi in 'Righe' per il dettaglio.";
+            icon.innerText = "⚠️";
+            box.classList.add("advisor-warn");
+        } else if (!hasRows && !hasCols && hasVals) {
+            text.innerText = "⚠️ Hai inserito dei valori ma nessuna riga. Il report mostrerà solo un unico totale generale. Aggiungi una dimensione in 'Righe'.";
+            icon.innerText = "⚠️";
+            box.classList.add("advisor-warn");
+        } else if ((hasRows || hasCols) && !hasVals) {
+            text.innerText = "⚠️ Hai creato la struttura ma mancano i dati. Trascina un campo in 'Valori' per vedere i numeri.";
+            icon.innerText = "⚠️";
+            box.classList.add("advisor-warn");
+        } else {
+            text.innerText = "✅ Configurazione valida. Puoi perfezionare lo stile, aggiungere percentuali o esportare.";
+            icon.innerText = "✅";
+            box.classList.add("advisor-good");
+        }
+    }
+
+    // --- BUTTON ACTIONS ---
+    document.getElementById("resetFieldsBtn").onclick = () => {
+        renderAvailable();
+        nodes.rows.innerHTML = "";
+        nodes.cols.innerHTML = "";
+        nodes.values.innerHTML = "";
+        updateAdvisor();
+        validateStructure();
+        renderPreview();
+    };
+    
+   // --- MERGE LOGIC UPDATED (TRACKING RECIPES) ---
+    document.getElementById("mergeBtn").onclick = () => {
+        const checked = Array.from(nodes.available.querySelectorAll(".m-chk:checked"));
+        if(checked.length < 2) return alert("Seleziona almeno 2 campi disponibili (checkbox) da unire.");
+        
+        // Ordine dei campi basato sull'ordine visivo o di selezione
+        // Qui usiamo l'ordine in cui li trova nel DOM (quindi l'ordine originale o ordinato)
+        const components = checked.map(c => c.value);
+        
+        const defaultName = components.join(" - ");
+        const newName = prompt("Nome del nuovo campo unito?", defaultName);
+        if(!newName) return;
+        
+        // 1. Esegui l'unione
+        executeMerge(newName, components);
+
+        // 2. Salva la ricetta
+        customMerges.push({ name: newName, parts: components });
+    };
+
+    // Funzione separata per poterla riutilizzare nel caricamento JSON
+    function executeMerge(name, parts) {
+        if(headers.includes(name)) return; // Evita duplicati se clicco due volte
+        headers.push(name);
+        
+        rawData.forEach(row => {
+            // Unisce i valori con " - "
+            row[name] = parts.map(p => row[p] || "").join(" - ");
+        });
+        
+        renderAvailable();
+        // Feedback visivo solo se siamo in fase manuale (non caricamento automatico)
+        // Ma renderAvailable fa già il lavoro sporco.
+    }
+
+    // --- HELP MODAL ---
+    const modal = document.getElementById("helpModal");
+    document.getElementById("openHelpBtn").onclick = () => modal.style.display = "block";
+    document.getElementsByClassName("close-btn")[0].onclick = () => modal.style.display = "none";
+    window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+
+    // --- COLOR & STYLE ---
+    const colorInput = document.getElementById("themeColor");
+    document.getElementById("useColors").onchange = (e) => {
+        colorInput.style.display = e.target.checked ? "inline-block" : "none";
+        renderPreview();
+    };
+    colorInput.oninput = () => {
+        document.documentElement.style.setProperty('--primary', colorInput.value);
+        renderPreview();
+    };
+    // Listeners for all inputs in style bar
+    const styleInputs = document.querySelectorAll('.style-bar input');
+    styleInputs.forEach(input => {
+        input.onchange = renderPreview;
+        if(input.type === "number") input.oninput = renderPreview;
+    });
+
+    // --- DRAG & DROP ---
+    new Sortable(nodes.available, {
+        group: { name: 'shared', pull: 'clone', put: false }, 
+        animation: 150,
+        sort: false
+    });
+
+    ["rows","cols","values"].forEach(id => {
+        new Sortable(document.getElementById(id), { 
+            group: "shared", animation: 150, handle: ".item", 
+            onAdd: (e) => { updateItemUI(e.item, e.to.id); updateRowFlags(); updateAdvisor(); validateStructure(); renderPreview(); },
+            onSort: () => { updateRowFlags(); updateAdvisor(); validateStructure(); renderPreview(); },
+            onRemove: () => { updateAdvisor(); validateStructure(); renderPreview(); }
+        }); 
+    });
+
+    document.getElementById('fieldSearch').onkeyup = (e) => {
+        const val = e.target.value.toLowerCase();
+        Array.from(nodes.available.children).forEach(el => {
+            el.style.display = el.getAttribute('data-field').toLowerCase().includes(val) ? 'flex' : 'none';
+        });
+    };
+
+    function updateItemUI(item, targetId) {
+        const oldCtrl = item.querySelector('.item-controls'); if(oldCtrl) oldCtrl.remove();
+        const oldSel = item.querySelector('select'); if(oldSel) oldSel.remove();
+        const oldRem = item.querySelector('.remove-btn'); if(oldRem) oldRem.remove();
+        const chk = item.querySelector('.m-chk'); if(chk) chk.style.display = (targetId === 'available' ? 'inline' : 'none');
+        
+        // Add Remove Button
+        const removeBtn = document.createElement("span");
+        removeBtn.className = "remove-btn";
+        removeBtn.innerHTML = "X";
+        removeBtn.title = "Rimuovi campo";
+        removeBtn.onclick = function() {
+            item.remove();
+            updateAdvisor();
+            validateStructure();
+            renderPreview();
+        };
+
+        if(targetId === 'rows') {
+            const ctrl = document.createElement("div"); ctrl.className = "item-controls";
+            // Added Sorting Select
+            ctrl.innerHTML = `
+                <select class="opt-sort" style="width:45px;" title="Ordinamento">
+                    <option value="az">A-Z</option>
+                    <option value="za">Z-A</option>
+                </select>
+                <label title="Vuoto">V<input type="checkbox" class="opt-v" checked></label>
+                <label title="Espandi">E<input type="checkbox" class="opt-e" checked></label>
+                <label title="Subtotale">S<input type="checkbox" class="opt-s" checked></label>
+                <label title="Compatta">C<input type="checkbox" class="opt-c"></label>
+                <label title="Grassetto">B<input type="checkbox" class="opt-b" checked></label>
+            `;
+            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview); 
+            item.appendChild(ctrl);
+        } else if (targetId === 'values') {
+            const ctrl = document.createElement("div"); ctrl.className = "item-controls";
+            ctrl.innerHTML = `<label title="Mostra in %"> % <input type="checkbox" class="opt-p"></label>`;
+            const s = document.createElement("select"); ["sum","count","avg","min","max"].forEach(f => { const o = document.createElement("option"); o.value = f; o.text = f; s.appendChild(o); });
+            ctrl.appendChild(s);
+            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview); 
+            item.appendChild(ctrl);
+        }
+
+        item.appendChild(removeBtn);
+    }
+
+    function updateRowFlags() {
+        const rows = Array.from(nodes.rows.children);
+        rows.forEach((item, index) => {
+            const isFirst = index === 0;
+            const isLast = index === rows.length - 1;
+            const chkC = item.querySelector('.opt-c');
+            if(chkC) {
+                if(isFirst) { chkC.checked = false; chkC.disabled = true; chkC.parentElement.style.opacity = 0.5; }
+                else { chkC.disabled = false; chkC.parentElement.style.opacity = 1; }
+            }
+            const chkE = item.querySelector('.opt-e');
+            if(chkE) {
+                if (!isLast) { chkE.checked = true; chkE.disabled = true; chkE.parentElement.style.opacity = 0.5; } 
+                else { chkE.disabled = false; chkE.parentElement.style.opacity = 1; }
+            }
+        });
+    }
+
+    // --- CSV PARSING ---
+    document.getElementById("file").onchange = (e) => {
+        const f = e.target.files[0]; if(!f) return; 
+        loadedFileName = f.name;
+        document.querySelector('.file-msg').innerText = "✅ " + f.name;
+        Papa.parse(f, { skipEmptyLines: true, complete: res => {
+            fullArray = res.data; 
+            document.getElementById("csvConfigSection").style.display = "block";
+            document.getElementById("dropZone").style.display = "none";
+            const hT = document.getElementById("headTable"), tT = document.getElementById("tailTable"); hT.innerHTML = tT.innerHTML = "";
+            fullArray.slice(0, 5).forEach((r, i) => { const tr = document.createElement("tr"); tr.innerHTML = `<td><input type="checkbox" class="h-chk" value="${i}"></td>` + r.map(c => `<td>${c||''}</td>`).join(""); hT.appendChild(tr); });
+            const start = Math.max(5, fullArray.length - 5); fullArray.slice(start).forEach((r, i) => { const tr = document.createElement("tr"); tr.innerHTML = `<td><input type="checkbox" class="t-chk" value="${start+i}" checked></td>` + r.map(c => `<td>${c||''}</td>`).join(""); tT.appendChild(tr); });
+        }});
+    };
+
+    document.getElementById("confirmConfigBtn").onclick = () => {
+        const hIdx = Array.from(document.querySelectorAll(".h-chk:checked")).map(c => +c.value); const tExcl = Array.from(document.querySelectorAll(".t-chk:not(:checked)")).map(c => +c.value);
+        if(!hIdx.length) return alert("Seleziona la riga di intestazione.");
+        headers = []; const nCols = fullArray[hIdx[0]].length;
+        for(let c=0; c<nCols; c++){ let parts = []; hIdx.forEach(r => { let v = (fullArray[r][c]||"").trim(); if(!v && c > 0) { for(let p=c-1; p>=0; p--) if(fullArray[r][p]){ v=fullArray[r][p]; break; } } if(v && !parts.includes(v)) parts.push(v); }); headers.push(parts.join(" ") || "Col " + c); }
+        rawData = []; const maxH = Math.max(...hIdx); fullArray.forEach((r, i) => { if(i > maxH && !hIdx.includes(i) && !tExcl.includes(i)) { let obj = {}; headers.forEach((h, idx) => obj[h] = r[idx]); rawData.push(obj); } });
+        
+        document.getElementById("csvConfigSection").style.display = "none";
+        const confBox = document.getElementById("dataConfirmationBox");
+        confBox.style.display = "block";
+        document.getElementById("status-step1").style.display = "block";
+
+        document.getElementById("confFileName").innerText = loadedFileName;
+        document.getElementById("statRows").innerText = rawData.length.toLocaleString('it-IT');
+        document.getElementById("statCols").innerText = headers.length;
+        document.getElementById("statHead").innerText = hIdx.length;
+        document.getElementById("statExcl").innerText = tExcl.length;
+
+        const mp = document.getElementById("miniPreviewTable"); mp.innerHTML = "";
+        const hr = document.createElement("tr"); headers.forEach(h => hr.innerHTML+=`<th>${h}</th>`); mp.appendChild(hr);
+        rawData.slice(0,3).forEach(row => {
+            const tr = document.createElement("tr");
+            headers.forEach(h => tr.innerHTML+=`<td>${row[h]||''}</td>`);
+            mp.appendChild(tr);
+        });
+
+        renderAvailable();
+        updateAdvisor();
+    };
+
+    function renderAvailable() { 
+        nodes.available.innerHTML = ""; 
+        headers.forEach(h => { 
+            const d = document.createElement("div"); 
+            d.className = "item"; 
+            d.setAttribute('data-field', h); 
+            d.innerHTML = `<input type="checkbox" class="m-chk" value="${h.replace(/"/g, '&quot;')}"> <b>${h}</b>`; 
+            nodes.available.appendChild(d); 
+        }); 
+    }
+
+    // --- CORE LOGIC ---
+    function parseNumber(v){ if(!v) return NaN; let s=v.toString().trim().replace(/[€\s]/g,"").replace(/\./g,"").replace(",","."); return parseFloat(s); }
+    function hexToRgb(hex) { const bigint = parseInt(hex.slice(1), 16); return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 }; }
+    function rgbToHex(r, g, b) { return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+    function getPastelColor(hex) { const { r, g, b } = hexToRgb(hex); const mix = (c) => Math.round(c * 0.15 + 255 * 0.85); return rgbToHex(mix(r), mix(g), mix(b)); }
+    function hexToArgb(hex) { return 'FF' + hex.replace('#', '').toUpperCase(); }
+
+    function getSettings() {
+        return {
+            rows: Array.from(nodes.rows.children).map(i => ({ 
+                field: i.getAttribute('data-field'), 
+                sort: i.querySelector('.opt-sort').value, 
+                v: i.querySelector(".opt-v").checked, 
+                e: i.querySelector(".opt-e").checked, 
+                s: i.querySelector(".opt-s").checked, 
+                c: i.querySelector(".opt-c").checked, 
+                b: i.querySelector(".opt-b").checked 
+            })),
+            cols: Array.from(nodes.cols.children).map(i => i.getAttribute('data-field')),
+            vals: Array.from(nodes.values.children).map(i => ({
+                field: i.getAttribute('data-field'), 
+                func: i.querySelector('select').value,
+                isPct: i.querySelector('.opt-p') ? i.querySelector('.opt-p').checked : false
+            })),
+            rowTot: document.getElementById("showRowTot").checked,
+            rowTotPct: document.getElementById("showRowTotPct").checked, 
+            grandTot: document.getElementById("showGrandTot").checked, 
+            useColors: document.getElementById("useColors").checked, 
+            useBorders: document.getElementById("useBorders").checked,
+            hideEmpty: document.getElementById("hideEmptyCols").checked,
+            decimals: parseInt(document.getElementById("numDecimals").value) || 0,
+            thousands: document.getElementById("useThousandSep").checked,
+            currency: document.getElementById("useCurrency").checked
+        };
+    }
+
+    function formatNumber(val, s, isPercent) {
+        if (typeof val !== 'number' || isNaN(val)) return val;
+        let localDec = isPercent ? 2 : s.decimals; 
+        let options = { minimumFractionDigits: localDec, maximumFractionDigits: localDec, useGrouping: s.thousands };
+        let formatted = s.thousands ? val.toLocaleString('it-IT', options) : val.toFixed(localDec).replace('.', ',');
+        if (isPercent) formatted += "%"; else if (s.currency) formatted += " €";
+        return formatted;
+    }
+
+    function calculateColMap(rSet) { let map = [], cur = 0; rSet.forEach((s, i) => { if(i > 0 && s.c) map[i] = map[i-1]; else { map[i] = cur; cur++; } }); return { map, count: cur }; }
+    function aggregate(rows, f, fn) { if(fn === "count") return rows.length; const ns = rows.map(r => parseNumber(r[f])).filter(v => !isNaN(v)); if(!ns.length) return fn === "count" ? 0 : ""; if(fn === "sum") return ns.reduce((a, b) => a + b, 0); if(fn === "avg") return ns.reduce((a, b) => a + b, 0) / ns.length; return fn === "min" ? Math.min(...ns) : Math.max(...ns); }
+
+    function calculateActiveColumns(s, rawData, cK) {
+        const activeCols = [];
+        if (s.vals.length === 0) {
+             const colKeys = (cK && cK.length > 0) ? cK : [""];
+             colKeys.forEach(key => activeCols.push({ key: key, val: { field: "", func: "" }, isDummy: true }));
+             return activeCols;
+        }
+        const colKeys = (cK && cK.length > 0) ? cK : [""];
+        colKeys.forEach(key => {
+            const groupRows = (key === "") ? rawData : rawData.filter(r => s.cols.map(f => (r[f]||"(vuoto)").trim()).join("|") === key);
+            s.vals.forEach(val => {
+                let keep = true;
+                if (s.hideEmpty) {
+                     const total = aggregate(groupRows, val.field, val.func);
+                     if (typeof total === 'number') { if(Math.abs(total) <= 0.005) keep = false; } else { if(!total) keep = false; }
+                }
+                if (keep) activeCols.push({ key: key, val: val, isDummy: false });
+            });
+        });
+        return activeCols;
+    }
+
+    // --- RECURSIVE VISUAL COUNTING FUNCTION ---
+    function getVisualRowCount(node, lvl, s) {
+        if (!node) return 0;
+        
+        // If current level is collapsed (E unchecked), it occupies exactly 1 visual row (summary)
+        const set = s.rows[lvl];
+        if (!set.e) return 1; 
+
+        const isLast = lvl === s.rows.length - 1;
+
+        if (isLast) {
+            // Last level expanded: count raw rows
+            return node.rows.length;
+        } else {
+            // Intermediate level expanded: sum of children's visual rows
+            if (!node.children) return 0;
+            return node.children.reduce((acc, child) => acc + getVisualRowCount(child, lvl + 1, s), 0);
+        }
+    }
+
+    function renderPreview() {
+        const s = getSettings(), div = document.getElementById("preview"); 
+        if(!rawData.length || (!s.rows.length && !s.cols.length && !s.vals.length)) {
+            div.innerHTML = `<div style="padding:60px; text-align:center; color:#94a3b8"><div style="font-size:40px; margin-bottom:10px; opacity:0.5;">📊</div>Costruisci il report trascinando i campi per vedere l'anteprima.</div>`;
+            return;
+        }
+
+        div.innerHTML = "";
+        const baseColor = s.useColors ? document.getElementById("themeColor").value : "#334155"; 
+        const headerBg = s.useColors ? baseColor : "white"; 
+        const headerText = s.useColors ? "white" : "black";
+        const pastelColor = s.useColors ? getPastelColor(baseColor) : "#ffffff";
+
+        const { map, count } = calculateColMap(s.rows); 
+        let cK = [...new Set(rawData.map(r => s.cols.map(f => (r[f]||"(vuoto)").trim()).join("|")))].sort();
+        if (s.cols.length === 0) cK = []; 
+
+        const activeCols = calculateActiveColumns(s, rawData, cK);
+        const colTotals = {}; let grandTotalAllVals = 0; 
+        
+        activeCols.forEach(col => {
+            if(!col.isDummy) {
+                 const r = (col.key === "") ? rawData : rawData.filter(row => s.cols.map(f => (row[f]||"(vuoto)").trim()).join("|") === col.key);
+                 const val = aggregate(r, col.val.field, col.val.func);
+                 colTotals[col.key + "|" + col.val.field + "|" + col.val.func] = (typeof val === 'number') ? val : 0;
+            }
+        });
+        if(s.rowTotPct) s.vals.forEach(vf => grandTotalAllVals += (aggregate(rawData, vf.field, vf.func) || 0));
+
+        const tbl = document.createElement("table"); tbl.className = "preview";
+        let trH = document.createElement("tr"); 
+        for(let i=0; i<count; i++) { const names = s.rows.filter((_, idx) => map[idx] === i).map(x => x.field); trH.innerHTML += `<th style="background:${headerBg}; color:${headerText}">${names.join(" / ")}</th>`; }
+        activeCols.forEach(col => {
+            let label = col.isDummy ? col.key : ((col.key === "") ? col.val.field : `${col.key}<br>${col.val.field}`);
+            if(col.val.isPct) label += " (%)";
+            trH.innerHTML += `<th style="background:${headerBg}; color:${headerText}">${label}</th>`;
+        });
+        if(s.rowTot) trH.innerHTML += `<th style="background:${headerBg}; color:${headerText}">TOTALE</th>`;
+        if(s.rowTotPct) trH.innerHTML += `<th style="background:${headerBg}; color:${headerText}">% INCID.</th>`;
+        tbl.appendChild(trH);
+
+        function group(data, lvl) { 
+            if(lvl >= s.rows.length) return null; 
+            const g = {}, f = s.rows[lvl].field; 
+            data.forEach(r => { const k = r[f]||"(vuoto)"; (g[k] = g[k]||[]).push(r); }); 
+            let entries = Object.entries(g);
+            const sortMode = s.rows[lvl].sort;
+            entries.sort((a, b) => {
+                const kA = a[0].toLowerCase(), kB = b[0].toLowerCase();
+                return sortMode === 'za' ? kB.localeCompare(kA) : kA.localeCompare(kB);
+            });
+            return entries.map(([k, rows]) => ({ key: k, rows, children: group(rows, lvl + 1) })); 
+        }
+        const tree = group(rawData, 0); 
+        
+        function getCellContent(rows, col) {
+             if(col.isDummy) return "";
+             const r = (col.key === "") ? rows : rows.filter(row => s.cols.map(f => (row[f]||"(vuoto)").trim()).join("|") === col.key);
+             let val = aggregate(r, col.val.field, col.val.func);
+             if(col.val.isPct && typeof val === 'number') {
+                 const denom = colTotals[col.key + "|" + col.val.field + "|" + col.val.func];
+                 val = (denom !== 0) ? (val / denom) * 100 : 0;
+                 return formatNumber(val, s, true);
+             }
+             return formatNumber(val, s, false);
+        }
+
+        function getRowTotal(rows) { let rSum = 0; s.vals.forEach(vf => rSum += (aggregate(rows, vf.field, vf.func) || 0)); return rSum; }
+
+        if (s.rows.length > 0 && tree) {
+            let lastV = Array(s.rows.length).fill(null);
+            function rec(nodes, lvl, pre) {
+                nodes.forEach(n => {
+                    const set = s.rows[lvl], isLast = lvl === s.rows.length - 1;
+                    const suppressHeader = isLast && set.e;
+
+                    if (!suppressHeader) {
+                        const tr = document.createElement("tr");
+                        if (lvl === 0 && s.useColors) { tr.style.backgroundColor = baseColor; tr.style.color = "white"; }
+                        if (set.b) tr.style.fontWeight = "bold"; 
+                        let cells = Array(count).fill(""); pre.concat(n.key).forEach((v, i) => { let d = v; if(s.rows[i].v && lastV[i] === v) d = ""; else { lastV[i] = v; for(let j=i+1; j<lastV.length; j++) lastV[j] = null; } if(d !== "") cells[map[i]] += (s.rows[i].c ? " • " : "") + d; });
+                        cells.forEach(c => tr.innerHTML += `<td style="text-align:left">${c}</td>`);
+                        if (isLast && !set.e) {
+                            activeCols.forEach(col => tr.innerHTML += `<td>${getCellContent(n.rows, col)}</td>`);
+                            if(s.rowTot) tr.innerHTML += `<td>${formatNumber(getRowTotal(n.rows), s, false)}</td>`;
+                            if(s.rowTotPct) {
+                                const rTot = getRowTotal(n.rows);
+                                const pct = (grandTotalAllVals !== 0) ? (rTot / grandTotalAllVals) * 100 : 0;
+                                tr.innerHTML += `<td>${formatNumber(pct, s, true)}</td>`;
+                            }
+                        } else { for(let i=0; i < activeCols.length + (s.rowTot?1:0) + (s.rowTotPct?1:0); i++) tr.innerHTML += `<td></td>`; }
+                        tbl.appendChild(tr);
+                    }
+
+                    if (isLast && set.e) {
+                        n.rows.forEach(record => {
+                            const tr = document.createElement("tr"); if(set.b) tr.style.fontWeight = "bold";
+                            let cells = Array(count).fill(""); pre.concat(n.key).forEach((v, i) => { let d = v; if(s.rows[i].v && lastV[i] === v) d = ""; else { lastV[i] = v; for(let j=i+1; j<lastV.length; j++) lastV[j] = null; } if(d !== "") cells[map[i]] += (s.rows[i].c ? " • " : "") + d; }); cells.forEach(c => tr.innerHTML += `<td style="text-align:left">${c}</td>`);
+                            activeCols.forEach(col => {
+                                if(col.isDummy) { tr.innerHTML += `<td></td>`; return; }
+                                const recKey = s.cols.length ? s.cols.map(f => (record[f]||"(vuoto)").trim()).join("|") : "";
+                                let valDisplay = "";
+                                if(recKey === col.key) {
+                                    let val = parseNumber(record[col.val.field]); 
+                                    if(col.val.isPct && !isNaN(val)) {
+                                         const denom = colTotals[col.key + "|" + col.val.field + "|" + col.val.func];
+                                         val = (denom !== 0) ? (val / denom) * 100 : 0;
+                                         valDisplay = formatNumber(val, s, true);
+                                    } else valDisplay = isNaN(val) ? record[col.val.field] : formatNumber(val, s, false);
+                                }
+                                tr.innerHTML += `<td>${valDisplay}</td>`; 
+                            });
+                            if(s.rowTot) { let rSum = 0; s.vals.forEach(vf => rSum += (parseNumber(record[vf.field]) || 0)); tr.innerHTML += `<td>${formatNumber(rSum, s, false)}</td>`; }
+                            if(s.rowTotPct) {
+                                let rSum = 0; s.vals.forEach(vf => rSum += (parseNumber(record[vf.field]) || 0));
+                                const pct = (grandTotalAllVals !== 0) ? (rSum / grandTotalAllVals) * 100 : 0;
+                                tr.innerHTML += `<td>${formatNumber(pct, s, true)}</td>`;
+                            }
+                            tbl.appendChild(tr);
+                        });
+                    } else if(n.children) rec(n.children, lvl + 1, pre.concat(n.key));
+
+                    // RECURSIVE VISUAL COUNT CHECK
+                    // We only show subtotal if S is checked AND the group expands to more than 1 visible row.
+                    if (set.s) {
+                        const visualCount = getVisualRowCount(n, lvl, s);
+                        if (visualCount > 1) {
+                            const trS = document.createElement("tr"); trS.className = "row-subtotal"; if(s.useColors) trS.style.backgroundColor = pastelColor;
+                            let sCells = Array(count).fill(""); sCells[map[lvl]] = `TOTALE ${n.key}`; sCells.forEach(c => trS.innerHTML += `<td style="text-align:left">${c}</td>`);
+                            activeCols.forEach(col => trS.innerHTML += `<td>${getCellContent(n.rows, col)}</td>`);
+                            if(s.rowTot) trS.innerHTML += `<td>${formatNumber(getRowTotal(n.rows), s, false)}</td>`;
+                            if(s.rowTotPct) {
+                                 const rTot = getRowTotal(n.rows);
+                                 const pct = (grandTotalAllVals !== 0) ? (rTot / grandTotalAllVals) * 100 : 0;
+                                 trS.innerHTML += `<td>${formatNumber(pct, s, true)}</td>`;
+                            }
+                            tbl.appendChild(trS);
+                        }
+                    }
+                });
+            }
+            rec(tree, 0, []);
+        }
+
+        if(s.grandTot) {
+            const trGT = document.createElement("tr"); trGT.className = "row-grand-total";
+            if(s.useColors) { trGT.style.backgroundColor = baseColor; trGT.style.color = "white"; }
+            let gtCells = [`TOTALE GENERALE`]; for(let i=1;i<count;i++) gtCells.push("");
+            gtCells.forEach((c, idx) => {
+                const td = document.createElement("td"); td.innerText = c; td.style.textAlign = idx === 0 ? "left" : "right"; 
+                if(idx===0) td.colSpan = count; else td.style.display="none"; 
+                trGT.appendChild(td); 
+            });
+            activeCols.forEach(col => trGT.appendChild(document.createElement("td")).innerText = getCellContent(rawData, col));
+            if(s.rowTot) trGT.appendChild(document.createElement("td")).innerText = formatNumber(getRowTotal(rawData), s, false);
+            if(s.rowTotPct) trGT.appendChild(document.createElement("td")).innerText = formatNumber(100, s, true);
+            tbl.appendChild(trGT);
+        }
+        div.appendChild(tbl);
+    }
+
+       // --- EXCEL EXPORT (ALL FEATURES CONSOLIDATED) ---
+    document.getElementById("exportBtn").onclick = async () => {
+        try {
+            const s = getSettings(); if(!rawData.length) return;
+            
+            // 1. Setup Colors
+            let baseArgb='FFFFFFFF', fontArgb='FF000000', pastelArgb='FFFFFFFF'; 
+            if(s.useColors) { 
+                const baseHex=document.getElementById("themeColor").value; 
+                baseArgb=hexToArgb(baseHex); 
+                fontArgb='FFFFFFFF'; 
+                pastelArgb=hexToArgb(getPastelColor(baseHex)); 
+            }
+
+            // 2. Prepare Data Structure
+            const { map, count } = calculateColMap(s.rows); 
+            let cK = [...new Set(rawData.map(r => s.cols.map(f => (r[f]||"(vuoto)").trim()).join("|")))].sort();
+            if (s.cols.length === 0) cK = [];
+
+            const activeCols = calculateActiveColumns(s, rawData, cK);
+            
+            // Calculate Grand Total for Denominators
+            const colTotals = {}; 
+            let grandTotalAllVals = 0;
+            activeCols.forEach(col => {
+                if(!col.isDummy) {
+                     const r = (col.key === "") ? rawData : rawData.filter(row => s.cols.map(f => (row[f]||"(vuoto)").trim()).join("|") === col.key);
+                     const val = aggregate(r, col.val.field, col.val.func);
+                     colTotals[col.key + "|" + col.val.field + "|" + col.val.func] = (typeof val === 'number') ? val : 0;
+                }
+            });
+            
+            // FIX LOGICO: Il Denominatore globale deve seguire le stesse regole del Totale Riga
+            // Sommiamo solo se è SUM e NON è Percentuale.
+            if(s.rowTotPct) {
+                s.vals.forEach(vf => {
+                    if(vf.func === 'sum' && !vf.isPct) {
+                        grandTotalAllVals += (aggregate(rawData, vf.field, vf.func) || 0);
+                    }
+                });
+            }
+
+            // Helpers
+            function getColLetter(n) { let s=""; while(n>=0) { s = String.fromCharCode(n%26 + 65) + s; n = Math.floor(n/26) - 1; } return s; }
+            function getExcelCellContent(rows, col) {
+                if(col.isDummy) return "";
+                const r = (col.key === "") ? rows : rows.filter(row => s.cols.map(f => (row[f]||"(vuoto)").trim()).join("|") === col.key);
+                let val = aggregate(r, col.val.field, col.val.func);
+                if(col.val.isPct && typeof val === 'number') {
+                    const denom = colTotals[col.key + "|" + col.val.field + "|" + col.val.func];
+                    return (denom !== 0) ? (val / denom) : 0;
+                }
+                return val;
+            }
+            
+            // FIX LOGICO: Helper Totale Riga
+            // Somma solo colonne che sono 'sum' e NON sono '%'
+            function getExcelRowTotal(rows) { 
+                let rSum = 0; 
+                s.vals.forEach(vf => {
+                    if(vf.func === 'sum' && !vf.isPct) {
+                        rSum += (aggregate(rows, vf.field, vf.func) || 0);
+                    }
+                }); 
+                return rSum; 
+            }
+
+            // 3. Init Workbook
+            let totalDataCols = activeCols.length + (s.rowTot ? 1 : 0) + (s.rowTotPct ? 1 : 0); 
+            const totalSheetCols = count + totalDataCols; 
+            const wb = new ExcelJS.Workbook(); const ws = wb.addWorksheet('Report');
+            
+            // 4. HEADER (Logica Doppia Intestazione Pivot-Style)
+            const isDoubleHeader = (s.cols.length > 0 && s.vals.length > 1);
+            let headerRow1Idx = 0;
+            let headerRow2Idx = 0;
+
+            if (!isDoubleHeader) {
+                // --- CASO STANDARD (1 Riga) ---
+                const headRow = []; 
+                for(let i=0; i<count; i++) headRow.push(s.rows.filter((_, idx) => map[idx] === i).map(x => x.field).join(" / ")); 
+                activeCols.forEach(col => {
+                    let n = col.key === "" ? col.val.field : `${col.key} - ${col.val.field}`;
+                    if(col.val.isPct) n += " (%)";
+                    headRow.push(n);
+                });
+                if(s.rowTot) headRow.push("TOTALE RIGA");
+                if(s.rowTotPct) headRow.push("INCID. %");
+                
+                const rH = ws.addRow(headRow);
+                headerRow1Idx = rH.number;
+                rH.eachCell(c => { 
+                    c.fill={type:'pattern',pattern:'solid',fgColor:{argb: baseArgb}}; 
+                    c.font={color:{argb: fontArgb}, bold:true}; 
+                    c.alignment={horizontal:'center', wrapText: true, vertical:'middle'}; 
+                    c.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                });
+            } else {
+                // --- CASO DOPPIA INTESTAZIONE (Celle Unite) ---
+                const row1 = []; const row2 = [];
+                for(let i=0; i<count; i++) {
+                    const name = s.rows.filter((_, idx) => map[idx] === i).map(x => x.field).join(" / ");
+                    row1.push(name); row2.push(name);
+                }
+                activeCols.forEach(col => {
+                    row1.push(col.key === "" ? "(Generale)" : col.key);
+                    let n = col.val.field; if(col.val.isPct) n += " (%)";
+                    row2.push(n);
+                });
+                if(s.rowTot) { row1.push("TOTALE RIGA"); row2.push("TOTALE RIGA"); }
+                if(s.rowTotPct) { row1.push("INCID. %"); row2.push("INCID. %"); }
+
+                const r1 = ws.addRow(row1); const r2 = ws.addRow(row2);
+                headerRow1Idx = r1.number; headerRow2Idx = r2.number;
+
+                for(let c=1; c<=count; c++) ws.mergeCells(headerRow1Idx, c, headerRow2Idx, c);
+                let currentKey = null; let mergeStart = -1;
+                for (let i = 0; i < activeCols.length; i++) {
+                    const colIdx = count + i + 1; const key = activeCols[i].key;
+                    if (key !== currentKey) {
+                        if (currentKey !== null && mergeStart !== -1) ws.mergeCells(headerRow1Idx, mergeStart, headerRow1Idx, colIdx - 1);
+                        currentKey = key; mergeStart = colIdx;
+                    }
+                }
+                if (currentKey !== null && mergeStart !== -1) ws.mergeCells(headerRow1Idx, mergeStart, headerRow1Idx, count + activeCols.length);
+                const startTot = count + activeCols.length + 1;
+                if (s.rowTot) ws.mergeCells(headerRow1Idx, startTot, headerRow2Idx, startTot);
+                if (s.rowTotPct) { const idx = s.rowTot ? startTot + 1 : startTot; ws.mergeCells(headerRow1Idx, idx, headerRow2Idx, idx); }
+                [r1, r2].forEach(r => r.eachCell(c => {
+                    c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: baseArgb } };
+                    c.font = { color: { argb: fontArgb }, bold: true };
+                    c.alignment = { horizontal: 'center', wrapText: true, vertical: 'middle' };
+                    c.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+                }));
+            }
+
+            const dataStartRowIndex = ws.lastRow.number + 1;
+            
+            // Box Drawer Helper
+            const drawBox = (startRow, endRow, startCol, endCol) => { 
+                const borderStyle = { style: 'thin' }; 
+                for (let r = startRow; r <= endRow; r++) { 
+                    for (let c = startCol; c <= endCol; c++) { 
+                        const cell = ws.getCell(r, c); 
+                        if (!cell.border) cell.border = {}; 
+                        if (r === startRow) cell.border.top = borderStyle; 
+                        if (r === endRow) cell.border.bottom = borderStyle; 
+                        if (c === startCol) cell.border.left = borderStyle; 
+                        if (c === endCol) cell.border.right = borderStyle; 
+                    } 
+                } 
+            };
+
+            // Grouping Logic
+            function group(data, lvl) { if(lvl >= s.rows.length) return null; const g = {}, f = s.rows[lvl].field; data.forEach(r => { const k = r[f]||"(vuoto)"; (g[k] = g[k]||[]).push(r); }); return Object.entries(g).sort().map(([k, rows]) => ({ key: k, rows, children: group(rows, lvl + 1) })); }
+            const tree = group(rawData, 0); 
+
+            // Number Formats
+            let numFmt = '#,##0';
+            if (s.decimals > 0) numFmt += '.' + '0'.repeat(s.decimals);
+            if (!s.thousands) numFmt = numFmt.replace('#,##', ''); 
+            if (s.currency) numFmt += ' "€"';
+            const pctFmt = '0.00%'; 
+
+            // 5. Recursive Write
+            if (s.rows.length > 0 && tree) {
+                let lastV = Array(s.rows.length).fill(null);
+                function writeRec(nodes, lvl, pre) {
+                    nodes.forEach(n => {
+                        const startRow = ws.lastRow.number + 1;
+                        const set = s.rows[lvl], isLast = lvl === s.rows.length - 1, indentCol = map[lvl] + 1;
+                        const suppressHeader = isLast && set.e;
+
+                        // A. HEADER / SINGLE ROW
+                        if (!suppressHeader) {
+                            const rowArr = Array(count).fill(""); pre.concat(n.key).forEach((v, i) => { let d = v; if(s.rows[i].v && lastV[i] === v) d = ""; else { lastV[i] = v; for(let j=i+1; j<lastV.length; j++) lastV[j] = null; } if(d !== "") rowArr[map[i]] += (s.rows[i].c ? "  • " : "") + d; });
+                            const r = ws.addRow(rowArr);
+                            
+                            if (isLast && !set.e) {
+                                activeCols.forEach(col => {
+                                    r.getCell(count + activeCols.indexOf(col) + 1).value = getExcelCellContent(n.rows, col);
+                                });
+                                if(s.rowTot) {
+                                    r.getCell(count + activeCols.length + 1).value = getExcelRowTotal(n.rows);
+                                }
+                                if(s.rowTotPct) {
+                                    const rTot = getExcelRowTotal(n.rows);
+                                    const pctCell = r.getCell(count + activeCols.length + (s.rowTot?1:0) + 1);
+                                    const totCell = r.getCell(count + activeCols.length + 1);
+                                    if(s.rowTot && grandTotalAllVals !== 0) {
+                                        pctCell.value = {
+                                            formula: `${getColLetter(totCell.col-1)}${r.number}/${grandTotalAllVals}`,
+                                            result: (rTot / grandTotalAllVals)
+                                        };
+                                    } else {
+                                        pctCell.value = (grandTotalAllVals !== 0) ? (rTot / grandTotalAllVals) : 0;
+                                    }
+                                }
+                            } 
+                            
+                            for(let c=1; c<=totalSheetCols; c++) {
+                                const cell = r.getCell(c);
+                                if(lvl === 0 && s.useColors) { cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb: baseArgb}}; cell.font = {color:{argb: fontArgb}}; }
+                                if(set.b) cell.font = Object.assign({}, cell.font || {}, {bold: true});
+                                cell.alignment = { wrapText: true, vertical: 'top' };
+                            }
+                        }
+                        
+                        const formulaRangeStart = ws.lastRow.number + 1;
+
+                        // B. DETAIL ROWS
+                        if (isLast && set.e) {
+                            n.rows.forEach(record => {
+                                const rowArr = Array(count).fill(""); pre.concat(n.key).forEach((v, i) => { let d = v; if(s.rows[i].v && lastV[i] === v) d = ""; else { lastV[i] = v; for(let j=i+1; j<lastV.length; j++) lastV[j] = null; } if(d !== "") rowArr[map[i]] += (s.rows[i].c ? "  • " : "") + d; });
+                                const dr = ws.addRow(rowArr);
+                                
+                                activeCols.forEach(col => {
+                                    let val = "";
+                                    if(!col.isDummy) {
+                                        const recKey = s.cols.length ? s.cols.map(f => (record[f]||"(vuoto)").trim()).join("|") : "";
+                                        if(recKey === col.key) {
+                                            let rawVal = parseNumber(record[col.val.field]);
+                                            if(col.val.isPct && !isNaN(rawVal)) {
+                                                 const denom = colTotals[col.key + "|" + col.val.field + "|" + col.val.func];
+                                                 val = (denom !== 0) ? (rawVal / denom) : 0;
+                                            } else val = isNaN(rawVal) ? record[col.val.field] : rawVal;
+                                        }
+                                    }
+                                    dr.getCell(count + activeCols.indexOf(col) + 1).value = val;
+                                });
+
+                                if(s.rowTot) { 
+                                    // FIX LOGICO: Somma riga solo se SUM e NON PCT
+                                    let rSum = 0; 
+                                    s.vals.forEach(vf => {
+                                        if(vf.func === 'sum' && !vf.isPct) {
+                                            rSum += (parseNumber(record[vf.field]) || 0);
+                                        }
+                                    }); 
+                                    dr.getCell(count + activeCols.length + 1).value = rSum;
+                                }
+                                if(s.rowTotPct) {
+                                    let rSum = 0; 
+                                    s.vals.forEach(vf => {
+                                        if(vf.func === 'sum' && !vf.isPct) {
+                                            rSum += (parseNumber(record[vf.field]) || 0);
+                                        }
+                                    });
+                                    const pctCell = dr.getCell(count + activeCols.length + (s.rowTot?1:0) + 1);
+                                    if(s.rowTot && grandTotalAllVals !== 0) {
+                                        const totCell = dr.getCell(count + activeCols.length + 1);
+                                        pctCell.value = {
+                                            formula: `${getColLetter(totCell.col-1)}${dr.number}/${grandTotalAllVals}`,
+                                            result: (rSum / grandTotalAllVals)
+                                        };
+                                    } else {
+                                        pctCell.value = (grandTotalAllVals !== 0) ? (rSum / grandTotalAllVals) : 0;
+                                    }
+                                }
+
+                                for(let c=1; c<=totalSheetCols; c++) {
+                                    const cell = dr.getCell(c);
+                                    cell.alignment = { wrapText: true, vertical: 'top' };
+                                    if(set.b) cell.font = {bold: true};
+                                }
+                            });
+                        } else { if (n.children) writeRec(n.children, lvl + 1, pre.concat(n.key)); }
+                        
+                        const formulaRangeEnd = ws.lastRow.number;
+
+                        // C. SUBTOTAL ROW (FORMULAS & CUSTOM STYLE)
+                        if (set.s) {
+                            const visualCount = getVisualRowCount(n, lvl, s);
+                            if(visualCount > 1) {
+                                const sub = Array(count).fill(""); sub[map[lvl]] = `TOTALE ${n.key}`;
+                                const rEx = ws.addRow(sub);
+                                
+                                activeCols.forEach(col => {
+                                    const cell = rEx.getCell(count + activeCols.indexOf(col) + 1);
+                                    if (!col.isDummy && !col.val.isPct && formulaRangeEnd >= formulaRangeStart) {
+                                        const colLet = getColLetter(cell.col - 1);
+                                        cell.value = {
+                                            formula: `SUBTOTAL(9,${colLet}${formulaRangeStart}:${colLet}${formulaRangeEnd})`,
+                                            result: getExcelCellContent(n.rows, col)
+                                        };
+                                    } else {
+                                        cell.value = getExcelCellContent(n.rows, col);
+                                    }
+                                });
+
+                                if(s.rowTot) {
+                                     const cell = rEx.getCell(count + activeCols.length + 1);
+                                     if(formulaRangeEnd >= formulaRangeStart) {
+                                        const colLet = getColLetter(cell.col - 1);
+                                        cell.value = {
+                                            formula: `SUBTOTAL(9,${colLet}${formulaRangeStart}:${colLet}${formulaRangeEnd})`,
+                                            result: getExcelRowTotal(n.rows)
+                                        };
+                                     } else {
+                                        cell.value = getExcelRowTotal(n.rows);
+                                     }
+                                }
+                                
+                                if(s.rowTotPct) {
+                                     const rTot = getExcelRowTotal(n.rows);
+                                     const pctCell = rEx.getCell(count + activeCols.length + (s.rowTot?1:0) + 1);
+                                     
+                                     if(s.rowTot && grandTotalAllVals !== 0) {
+                                         const totCell = rEx.getCell(count + activeCols.length + 1);
+                                         const totColLet = getColLetter(totCell.col - 1);
+                                         pctCell.value = {
+                                             formula: `${totColLet}${rEx.number}/${grandTotalAllVals}`,
+                                             result: (rTot / grandTotalAllVals)
+                                         };
+                                     } else {
+                                         pctCell.value = (grandTotalAllVals !== 0) ? (rTot / grandTotalAllVals) : 0;
+                                     }
+                                }
+
+                                // --- STYLE FIX: BACKGROUND & BORDERS (Logic Update) ---
+                                for(let c = 1; c <= totalSheetCols; c++) { 
+                                    const cell = rEx.getCell(c); 
+                                    cell.font = {bold:true}; 
+                                    cell.alignment = { wrapText: true };
+
+                                    if(s.useColors) {
+                                        const bStyle = {style:'thin'};
+                                        // 1. Separatore Destro su cella bianca
+                                        if(c === indentCol - 1 && indentCol > 1) {
+                                            if(!cell.border) cell.border = {};
+                                            cell.border.right = bStyle;
+                                        }
+                                        // 2. Area Colorata
+                                        if(c >= indentCol) {
+                                            cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb: pastelArgb}};
+                                            const borders = cell.border || {};
+                                            borders.top = bStyle;
+                                            borders.bottom = bStyle;
+                                            if(c === indentCol && indentCol === 1) borders.left = bStyle;
+                                            if(c === totalSheetCols) borders.right = bStyle;
+                                            cell.border = borders;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if (s.useBorders && lvl < s.rows.length - 1) { 
+                            const endRow = ws.lastRow.number; 
+                            drawBox(startRow, endRow, indentCol, totalSheetCols); 
+                        }
+                    });
+                }
+                writeRec(tree, 0, []);
+            }
+
+            // 6. Grand Total Row
+            if(s.grandTot) {
+                const gtArr = Array(count).fill(""); gtArr[0] = "TOTALE GENERALE"; 
+                const rGT = ws.addRow(gtArr); rGT.height = 25; 
+                if(count > 1) ws.mergeCells(rGT.number, 1, rGT.number, count);
+                
+                const finalDataRow = rGT.number - 1;
+
+                activeCols.forEach(col => {
+                    const cell = rGT.getCell(count + activeCols.indexOf(col) + 1);
+                    if (!col.isDummy && !col.val.isPct && finalDataRow >= dataStartRowIndex) {
+                        const colLet = getColLetter(cell.col - 1);
+                        cell.value = {
+                            formula: `SUBTOTAL(9,${colLet}${dataStartRowIndex}:${colLet}${finalDataRow})`,
+                            result: getExcelCellContent(rawData, col)
+                        };
+                    } else {
+                        cell.value = getExcelCellContent(rawData, col);
+                    }
+                });
+                
+                if(s.rowTot) {
+                    const cell = rGT.getCell(count + activeCols.length + 1);
+                     if(finalDataRow >= dataStartRowIndex) {
+                        const colLet = getColLetter(cell.col - 1);
+                        cell.value = {
+                            formula: `SUBTOTAL(9,${colLet}${dataStartRowIndex}:${colLet}${finalDataRow})`,
+                            result: getExcelRowTotal(rawData)
+                        };
+                    } else {
+                         cell.value = getExcelRowTotal(rawData);
+                    }
+                }
+                
+                if(s.rowTotPct) rGT.getCell(count + activeCols.length + (s.rowTot?1:0) + 1).value = 1;
+
+                for(let c=1; c<=totalSheetCols; c++) {
+                    const cell = rGT.getCell(c);
+                    cell.font = {bold: true, size: 12};
+                    cell.border = { top: {style:'double'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                    if(s.useColors) { 
+                        cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb: baseArgb}}; 
+                        cell.font = {color:{argb: 'FFFFFFFF'}, bold: true, size: 12}; 
+                    }
+                    cell.alignment = {vertical: 'middle', horizontal: c <= count ? 'right' : 'right'};
+                }
+            }
+            
+            // 7. Formatting
+            ws.eachRow(r => r.eachCell((c, colIdx) => { 
+                if(colIdx > count) { 
+                    const dataColIdx = colIdx - count - 1; 
+                    let isPctCol = false;
+                    if(dataColIdx < activeCols.length) {
+                        if(activeCols[dataColIdx].val.isPct) isPctCol = true;
+                    } else {
+                        const hasRowTot = s.rowTot;
+                        if(hasRowTot && dataColIdx === activeCols.length) isPctCol = false; 
+                        else isPctCol = true; 
+                    }
+                    c.numFmt = isPctCol ? pctFmt : numFmt;
+                }
+            }));
+            
+            ws.columns.forEach(col => { let max = 10; col.eachCell({includeEmpty:true}, c => { const l=c.value?c.value.toString().length:0; if(l>max) max=l; }); col.width = Math.min(max + 2, 50); });
+            
+            const buf = await wb.xlsx.writeBuffer(); saveAs(new Blob([buf]), document.getElementById("outname").value + ".xlsx");
+        } catch(e) {
+            console.error(e);
+            alert("Errore durante l'export Excel: " + e.message);
+        }
+    };
+
+    // --- PDF EXPORT ---
+    document.getElementById("exportPdfBtn").onclick = () => {
+        const s = getSettings(); if(!rawData.length) return;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l'); // Landscape
+
+        // Colors
+        const baseColor = s.useColors ? document.getElementById("themeColor").value : "#334155";
+        const pastelColor = s.useColors ? getPastelColor(baseColor) : "#f1f5f9";
+        const { map, count } = calculateColMap(s.rows); 
+        
+        let cK = [...new Set(rawData.map(r => s.cols.map(f => (r[f]||"(vuoto)").trim()).join("|")))].sort();
+        if (s.cols.length === 0) cK = [];
+
+        const activeCols = calculateActiveColumns(s, rawData, cK);
+
+        // Header Structure
+        const headRow = []; 
+        for(let i=0; i<count; i++) headRow.push(s.rows.filter((_, idx) => map[idx] === i).map(x => x.field).join("\n")); 
+        activeCols.forEach(col => headRow.push(col.key === "" ? col.val.field : `${col.key}\n${col.val.field}`));
+        if(s.rowTot) headRow.push("TOTALE");
+        if(s.rowTotPct) headRow.push("% INCID.");
+
+        const bodyRows = [];
+        
+        function group(data, lvl) { if(lvl >= s.rows.length) return null; const g = {}, f = s.rows[lvl].field; data.forEach(r => { const k = r[f]||"(vuoto)"; (g[k] = g[k]||[]).push(r); }); return Object.entries(g).sort().map(([k, rows]) => ({ key: k, rows, children: group(rows, lvl + 1) })); }
+        const tree = group(rawData, 0); 
+
+        // Grand Total vars
+        const colTotals = {}; 
+        let grandTotalAllVals = 0;
+        if(s.rowTotPct) s.vals.forEach(vf => grandTotalAllVals += (aggregate(rawData, vf.field, vf.func) || 0));
+        activeCols.forEach(col => {
+            if(!col.isDummy) {
+                 const r = (col.key === "") ? rawData : rawData.filter(row => s.cols.map(f => (row[f]||"(vuoto)").trim()).join("|") === col.key);
+                 const val = aggregate(r, col.val.field, col.val.func);
+                 colTotals[col.key + "|" + col.val.field + "|" + col.val.func] = (typeof val === 'number') ? val : 0;
+            }
+        });
+
+        // Helper to get cell content (handling %)
+        function getPdfCellContent(rows, col) {
+             if(col.isDummy) return "";
+             const r = (col.key === "") ? rows : rows.filter(row => s.cols.map(f => (row[f]||"(vuoto)").trim()).join("|") === col.key);
+             let val = aggregate(r, col.val.field, col.val.func);
+             if(col.val.isPct && typeof val === 'number') {
+                 const denom = colTotals[col.key + "|" + col.val.field + "|" + col.val.func];
+                 val = (denom !== 0) ? (val / denom) * 100 : 0;
+                 return formatNumber(val, s, true);
+             }
+             return formatNumber(val, s, false);
+        }
+        function getRowTotal(rows) { let rSum = 0; s.vals.forEach(vf => rSum += (aggregate(rows, vf.field, vf.func) || 0)); return rSum; }
+
+        if (s.rows.length > 0 && tree) {
+            let lastV = Array(s.rows.length).fill(null);
+            function writeRec(nodes, lvl, pre) {
+                nodes.forEach(n => {
+                    const set = s.rows[lvl], isLast = lvl === s.rows.length - 1;
+                    const suppressHeader = isLast && set.e;
+
+                    if (!suppressHeader) {
+                        const rowArr = Array(count).fill(""); 
+                        pre.concat(n.key).forEach((v, i) => { 
+                            let d = v; 
+                            if(s.rows[i].v && lastV[i] === v) d = ""; 
+                            else { lastV[i] = v; for(let j=i+1; j<lastV.length; j++) lastV[j] = null; } 
+                            if(d !== "") rowArr[map[i]] += (s.rows[i].c ? "  • " : "") + d; 
+                        });
+
+                        if (isLast && !set.e) {
+                            activeCols.forEach(col => rowArr.push(getPdfCellContent(n.rows, col)));
+                            if(s.rowTot) rowArr.push(formatNumber(getRowTotal(n.rows), s, false));
+                            if(s.rowTotPct) {
+                                const rTot = getRowTotal(n.rows);
+                                const pct = (grandTotalAllVals !== 0) ? (rTot / grandTotalAllVals) * 100 : 0;
+                                rowArr.push(formatNumber(pct, s, true));
+                            }
+                        } else { 
+                             while(rowArr.length < headRow.length) rowArr.push(""); 
+                        }
+                        
+                        let style = {};
+                        if(lvl === 0 && s.useColors) { style.fillColor = baseColor; style.textColor = 255; style.fontStyle = 'bold'; }
+                        else if(set.b) style.fontStyle = 'bold';
+
+                        bodyRows.push({content: rowArr, styles: style});
+                    }
+
+                    if (isLast && set.e) {
+                        n.rows.forEach(record => {
+                            const rowArr = Array(count).fill(""); 
+                            pre.concat(n.key).forEach((v, i) => { 
+                                let d = v; 
+                                if(s.rows[i].v && lastV[i] === v) d = ""; 
+                                else { lastV[i] = v; for(let j=i+1; j<lastV.length; j++) lastV[j] = null; } 
+                                if(d !== "") rowArr[map[i]] += (s.rows[i].c ? "  • " : "") + d; 
+                            });
+                            
+                            activeCols.forEach(col => {
+                                if(col.isDummy) rowArr.push("");
+                                else {
+                                    const recKey = s.cols.length ? s.cols.map(f => (record[f]||"(vuoto)").trim()).join("|") : "";
+                                    let valDisplay = "";
+                                    if(recKey === col.key) {
+                                        let val = parseNumber(record[col.val.field]); 
+                                        if(col.val.isPct && !isNaN(val)) {
+                                             const denom = colTotals[col.key + "|" + col.val.field + "|" + col.val.func];
+                                             val = (denom !== 0) ? (val / denom) * 100 : 0;
+                                             valDisplay = formatNumber(val, s, true);
+                                        } else valDisplay = isNaN(val) ? record[col.val.field] : formatNumber(val, s, false);
+                                    }
+                                    rowArr.push(valDisplay);
+                                }
+                            });
+
+                            if(s.rowTot) { let rSum = 0; s.vals.forEach(vf => rSum += (parseNumber(record[vf.field]) || 0)); rowArr.push(formatNumber(rSum, s, false)); }
+                            if(s.rowTotPct) {
+                                let rSum = 0; s.vals.forEach(vf => rSum += (parseNumber(record[vf.field]) || 0));
+                                const pct = (grandTotalAllVals !== 0) ? (rSum / grandTotalAllVals) * 100 : 0;
+                                rowArr.push(formatNumber(pct, s, true));
+                            }
+                            
+                            let style = {}; if(set.b) style.fontStyle = 'bold';
+                            bodyRows.push({content: rowArr, styles: style});
+                        });
+                    } else if(n.children) writeRec(n.children, lvl + 1, pre.concat(n.key));
+
+                    // --- LOGICA SUBTOTALI V7 ---
+                    if (set.s) {
+                        const visualCount = getVisualRowCount(n, lvl, s);
+                        if (visualCount > 1) {
+                             const sub = Array(count).fill(""); sub[map[lvl]] = `TOTALE ${n.key}`;
+                             activeCols.forEach(col => sub.push(getPdfCellContent(n.rows, col)));
+                            if(s.rowTot) sub.push(formatNumber(getRowTotal(n.rows), s, false));
+                            if(s.rowTotPct) {
+                                 const rTot = getRowTotal(n.rows);
+                                 const pct = (grandTotalAllVals !== 0) ? (rTot / grandTotalAllVals) * 100 : 0;
+                                 sub.push(formatNumber(pct, s, true));
+                            }
+                            
+                            let style = { fontStyle: 'bold' };
+                            if(s.useColors) style.fillColor = pastelColor;
+                            bodyRows.push({content: sub, styles: style});
+                        }
+                    }
+                });
+            }
+            writeRec(tree, 0, []);
+        }
+
+        if(s.grandTot) {
+            const gtArr = Array(count).fill(""); gtArr[0] = "TOTALE GENERALE";
+             activeCols.forEach(col => gtArr.push(getPdfCellContent(rawData, col)));
+            if(s.rowTot) gtArr.push(formatNumber(getRowTotal(rawData), s, false));
+            if(s.rowTotPct) gtArr.push(formatNumber(100, s, true));
+            
+            let style = { fontStyle: 'bold' };
+            if(s.useColors) { style.fillColor = baseColor; style.textColor = 255; }
+            else { style.fillColor = [220, 220, 220]; }
+            bodyRows.push({content: gtArr, styles: style});
+        }
+
+        doc.autoTable({
+            head: [headRow],
+            body: bodyRows.map(r => r.content),
+            styles: { fontSize: 8, cellPadding: 1.5 },
+            headStyles: { fillColor: s.useColors ? baseColor : [50, 50, 50] },
+            didParseCell: function(data) {
+                if (bodyRows[data.row.index] && bodyRows[data.row.index].styles) {
+                    const st = bodyRows[data.row.index].styles;
+                    if(st.fillColor) data.cell.styles.fillColor = st.fillColor;
+                    if(st.textColor) data.cell.styles.textColor = st.textColor;
+                    if(st.fontStyle) data.cell.styles.fontStyle = st.fontStyle;
+                }
+                if(data.column.index >= count) data.cell.styles.halign = 'right';
+            }
+        });
+
+        doc.save(document.getElementById("outname").value + ".pdf");
+    };
+    // --- PERSISTENZA (SALVA / CARICA MODELLO) ---
+
+    // 1. SALVA CONFIGURAZIONE
+    document.getElementById("saveConfigBtn").onclick = () => {
+        // Chiedi il nome file
+        let fileName = prompt("Scegli il nome del file modello:", "Modello_Report");
+        if(fileName === null) return; // Annullato dall'utente
+        
+        // Pulizia nome e estensione
+        if(!fileName.trim()) fileName = "Modello_Report";
+        if(!fileName.endsWith(".json")) fileName += ".json";
+
+        const s = getSettings();
+        const exportData = {
+            version: "1.2",
+            date: new Date().toISOString(),
+            merges: customMerges, 
+            config: s
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], {type: "application/json"});
+        saveAs(blob, fileName);
+
+        // --- NUOVO AVVISO PER L'UTENTE ---
+        // Usiamo un piccolo timeout per dare tempo al browser di far partire l'animazione di download
+        setTimeout(() => {
+            alert(`✅ Modello salvato con successo!\n\nNome file: ${fileName}\nPosizione: Controlla la cartella "Download" del tuo computer.`);
+        }, 100);
+    };
+
+    // 2. CARICA CONFIGURAZIONE
+    document.getElementById("configInput").onchange = (e) => {
+        const f = e.target.files[0];
+        if(!f) return;
+        
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            try {
+                const data = JSON.parse(evt.target.result);
+                if(!data.config) throw new Error("Formato file non valido");
+
+                // A. RIPRISTINA CAMPI UNITI (PRIMA di applicare i settaggi)
+                if(data.merges && Array.isArray(data.merges)) {
+                    // Resetta i merge attuali per evitare duplicati sporchi se ricarico più volte
+                    customMerges = []; 
+                    
+                    data.merges.forEach(m => {
+                        // Verifica che i "pezzi" originali esistano nel CSV attuale
+                        const missingParts = m.parts.filter(p => !headers.includes(p) && !data.merges.some(mx => mx.name === p));
+                        
+                        // Nota: il check sopra è base. Se uniamo campi già uniti l'ordine conta, 
+                        // ma per semplicità assumiamo unioni di campi base.
+                        if(missingParts.length === 0) {
+                            executeMerge(m.name, m.parts);
+                            customMerges.push(m); // Lo rimettiamo in memoria
+                        } else {
+                            console.warn(`Impossibile ricreare il campo unito '${m.name}'. Campi mancanti: ${missingParts.join(", ")}`);
+                        }
+                    });
+                }
+
+                // B. APPLICA IL RESTO
+                applySettings(data.config);
+                alert("Modello caricato con successo! ✅\nCampi uniti ripristinati: " + (data.merges ? data.merges.length : 0));
+            } catch(err) {
+                console.error(err);
+                alert("Errore nel caricamento del file: " + err.message);
+            }
+            e.target.value = '';
+        };
+        reader.readAsText(f);
+    };
+
+    // Funzione Helper per applicare i settaggi
+    function applySettings(s) {
+        // 1. Ripristina Opzioni Globali UI
+        if(document.getElementById("showRowTot")) document.getElementById("showRowTot").checked = s.rowTot;
+        if(document.getElementById("showRowTotPct")) document.getElementById("showRowTotPct").checked = s.rowTotPct;
+        if(document.getElementById("showGrandTot")) document.getElementById("showGrandTot").checked = s.grandTot;
+        
+        if(document.getElementById("useColors")) {
+            document.getElementById("useColors").checked = s.useColors;
+            document.getElementById("themeColor").style.display = s.useColors ? "inline-block" : "none";
+        }
+        if(document.getElementById("useBorders")) document.getElementById("useBorders").checked = s.useBorders;
+        if(document.getElementById("hideEmptyCols")) document.getElementById("hideEmptyCols").checked = s.hideEmpty;
+        if(document.getElementById("numDecimals")) document.getElementById("numDecimals").value = s.decimals;
+        if(document.getElementById("useThousandSep")) document.getElementById("useThousandSep").checked = s.thousands;
+        if(document.getElementById("useCurrency")) document.getElementById("useCurrency").checked = s.currency;
+
+        // 2. Pulisce le liste
+        nodes.rows.innerHTML = "";
+        nodes.cols.innerHTML = "";
+        nodes.values.innerHTML = "";
+        
+        // Aggiorna la lista disponibili (ora include anche i campi uniti appena ricreati)
+        renderAvailable(); 
+
+        // 3. Ricostruisce RIGHE
+        s.rows.forEach(r => {
+            const item = createConfiguredItem(r.field, 'rows');
+            if(item) {
+                if(r.sort) item.querySelector('.opt-sort').value = r.sort;
+                item.querySelector('.opt-v').checked = r.v;
+                item.querySelector('.opt-e').checked = r.e;
+                item.querySelector('.opt-s').checked = r.s;
+                item.querySelector('.opt-c').checked = r.c;
+                item.querySelector('.opt-b').checked = r.b;
+                nodes.rows.appendChild(item);
+                removeFromAvailable(r.field);
+            }
+        });
+
+        // 4. Ricostruisce COLONNE
+        s.cols.forEach(cField => {
+            const item = createConfiguredItem(cField, 'cols');
+            if(item) {
+                nodes.cols.appendChild(item);
+                removeFromAvailable(cField);
+            }
+        });
+
+        // 5. Ricostruisce VALORI
+        s.vals.forEach(v => {
+            const item = createConfiguredItem(v.field, 'values');
+            if(item) {
+                item.querySelector('select').value = v.func;
+                const pctChk = item.querySelector('.opt-p');
+                if(pctChk) pctChk.checked = v.isPct;
+                nodes.values.appendChild(item);
+            }
+        });
+
+        updateRowFlags();
+        updateAdvisor();
+        validateStructure();
+        renderPreview();
+    }
+
+    // Crea un elemento DOM
+    function createConfiguredItem(field, targetId) {
+        if(!headers.includes(field)) {
+            console.warn(`Campo '${field}' non trovato (o non ricreato) nel CSV attuale.`);
+            return null;
+        }
+
+        const d = document.createElement("div"); 
+        d.className = "item"; 
+        d.setAttribute('data-field', field); 
+        d.innerHTML = `<b>${field}</b>`;
+        
+        const removeBtn = document.createElement("span");
+        removeBtn.className = "remove-btn";
+        removeBtn.innerHTML = "X";
+        removeBtn.onclick = function() { d.remove(); updateAdvisor(); validateStructure(); renderPreview(); };
+
+        if(targetId === 'rows') {
+            const ctrl = document.createElement("div"); ctrl.className = "item-controls";
+            ctrl.innerHTML = `
+                <select class="opt-sort" style="width:45px;" title="Ordinamento"><option value="az">A-Z</option><option value="za">Z-A</option></select>
+                <label title="Vuoto">V<input type="checkbox" class="opt-v" checked></label>
+                <label title="Espandi">E<input type="checkbox" class="opt-e" checked></label>
+                <label title="Subtotale">S<input type="checkbox" class="opt-s" checked></label>
+                <label title="Compatta">C<input type="checkbox" class="opt-c"></label>
+                <label title="Grassetto">B<input type="checkbox" class="opt-b" checked></label>
+            `;
+            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview); 
+            d.appendChild(ctrl);
+        } else if (targetId === 'values') {
+            const ctrl = document.createElement("div"); ctrl.className = "item-controls";
+            ctrl.innerHTML = `<label title="Mostra in %"> % <input type="checkbox" class="opt-p"></label>`;
+            const s = document.createElement("select"); 
+            ["sum","count","avg","min","max"].forEach(f => { const o = document.createElement("option"); o.value = f; o.text = f; s.appendChild(o); });
+            ctrl.appendChild(s);
+            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview); 
+            d.appendChild(ctrl);
+        }
+
+        d.appendChild(removeBtn);
+        return d;
+    }
+
+    function removeFromAvailable(field) {
+        const chk = nodes.available.querySelector(`.m-chk[value="${field.replace(/"/g, '&quot;')}"]`);
+        if(chk) chk.checked = true; 
+    }
+    return { goToStep };
+})();
+</script>
+</body>
+</html>
