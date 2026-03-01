@@ -190,9 +190,109 @@
  .advisor-warn { background: #fffbeb; border-color: #fcd34d; color: #b45309; }
  .advisor-good { background: #f0fdf4; border-color: #86efac; color: #15803d; }
  .advisor-icon { font-size: 18px; }
+
+ /* ===== NORMALIZATION PANEL ===== */
+ #normModal .modal-content { max-width: 780px; }
+ .norm-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+ .norm-table th { background: #f8fafc; padding: 9px 12px; text-align: left; font-weight: 700; color: #475569; border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; }
+ .norm-table td { padding: 7px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+ .norm-table tr:hover td { background: #f8fafc; }
+ .norm-table .col-name { font-weight: 600; color: #334155; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+ .norm-table .col-type { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
+ .norm-type-text { background: #dbeafe; color: #1d4ed8; }
+ .norm-type-num { background: #fef3c7; color: #92400e; }
+ .norm-type-mixed { background: #f3e8ff; color: #6d28d9; }
+ .norm-chk-group { display: flex; gap: 12px; flex-wrap: wrap; }
+ .norm-chk-group label { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #475569; cursor: pointer; white-space: nowrap; }
+ .norm-chk-group input[type="checkbox"] { width: 13px; height: 13px; }
+ .norm-preview-cell { font-size: 11px; color: #64748b; background: #f8fafc; padding: 2px 6px; border-radius: 3px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
+ .norm-preview-arrow { color: #0ea5a4; font-weight: bold; margin: 0 4px; }
+ .norm-stat-badge { font-size: 10px; background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; padding: 1px 6px; border-radius: 10px; font-weight: 700; margin-left: 4px; }
+ .norm-select-all-bar { background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+ .norm-select-all-bar span { font-size: 12px; font-weight: 700; color: #0f766e; margin-right: 5px; }
+ .norm-btn-small { font-size: 11px; padding: 4px 10px; border-radius: 5px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; cursor: pointer; font-weight: 600; }
+ .norm-btn-small:hover { background: #bae6fd; }
+
+ /* ===== COPY TO CLIPBOARD BUTTON ===== */
+ #copyTableBtn { background: #fff; color: #475569; border: 1px solid #cbd5e1; font-size: 13px; padding: 6px 14px; box-shadow: none; }
+ #copyTableBtn:hover { background: #f0fdf4; color: #15803d; border-color: #86efac; }
+
+
+ /* ===== TOAST NOTIFICATIONS ===== */
+ #toast-container {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+ }
+ .toast {
+    background: #1e293b; color: white; padding: 12px 18px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    display: flex; align-items: center; gap: 10px; pointer-events: all;
+    animation: toastIn 0.3s ease-out forwards;
+    max-width: 360px; border-left: 4px solid var(--primary);
+    line-height: 1.4;
+ }
+ .toast.toast-success { border-left-color: var(--success); }
+ .toast.toast-error { border-left-color: var(--danger); }
+ .toast.toast-warning { border-left-color: #f59e0b; }
+ .toast.toast-out { animation: toastOut 0.3s ease-in forwards; }
+ @keyframes toastIn { from { opacity:0; transform: translateX(40px); } to { opacity:1; transform: translateX(0); } }
+ @keyframes toastOut { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(40px); } }
+
+ /* ===== LOADING SPINNER ===== */
+ #loading-overlay {
+    display: none; position: fixed; inset: 0; z-index: 8000;
+    background: rgba(248,250,252,0.85); backdrop-filter: blur(4px);
+    flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+ }
+ #loading-overlay.active { display: flex; }
+ .spinner {
+    width: 48px; height: 48px; border: 4px solid #e2e8f0;
+    border-top-color: var(--primary); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+ }
+ @keyframes spin { to { transform: rotate(360deg); } }
+ #loading-label { font-size: 15px; font-weight: 600; color: #475569; }
+
+ /* ===== UNDO/REDO BUTTONS ===== */
+ .undo-redo-group { display: flex; gap: 6px; }
+ button.icon-btn {
+    background: #fff; color: #64748b; border: 1px solid #cbd5e1;
+    padding: 8px 12px; font-size: 16px; box-shadow: none; min-width: 38px; justify-content: center;
+ }
+ button.icon-btn:hover { background: #f1f5f9; color: var(--text); border-color: #94a3b8; }
+ button.icon-btn:disabled { opacity: 0.35; }
+
+ /* ===== IMPROVED LIST CONTAINERS ===== */
+ #rows-container { border-left: 6px solid var(--col-rows); background: #fdfffe; }
+ #cols-container { border-top: 6px solid var(--col-cols); background: #fdf8ff; }
+ #vals-container { border-bottom: 6px solid var(--col-vals); background: #fffaf5; }
+ 
+ #rows-container .list-header { background: #f0fdf4; color: var(--col-rows); }
+ #cols-container .list-header { background: #faf5ff; color: var(--col-cols); }
+ #vals-container .list-header { background: #fff7ed; color: var(--col-vals); }
+
+ /* Drop placeholder visual */
+ .sortable-ghost { opacity: 0.4; background: #dbeafe !important; border: 2px dashed #3b82f6 !important; }
+
+ /* Clickable sortable table headers */
+ table.preview th.sortable-col { cursor: pointer; user-select: none; }
+ table.preview th.sortable-col:hover { filter: brightness(85%); }
+ table.preview th .sort-arrow { margin-left: 4px; font-size: 10px; opacity: 0.6; }
+
+ /* ===== KEYBOARD SHORTCUT HINT ===== */
+ .kbd-hint { font-size: 10px; color: #94a3b8; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 3px; padding: 1px 5px; font-family: monospace; margin-left: 4px; }
 </style>
 </head>
 <body>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <div id="loading-label">Generazione in corso...</div>
+</div>
 
 <!-- STICKY HEADER -->
 <div class="stepper-container">
@@ -282,6 +382,7 @@
 
                 <div class="btn-group">
                     <button class="secondary" onclick="location.reload()">🔄 Annulla</button>
+                    <button id="openNormBtn" class="secondary" style="background:#fefce8; border-color:#fde68a; color:#92400e;">🧹 Normalizza Testo</button>
                     <button onclick="app.goToStep(2)">Procedi alla Costruzione ➔</button>
                 </div>
             </div>
@@ -301,12 +402,17 @@
             
             <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 13px; color: #475569; font-weight: 500;">💡 Trascina i campi. L'anteprima è automatica.</span>
-                <div>
-                     <button id="saveConfigBtn" class="secondary" style="font-size: 13px; padding: 8px 14px; margin-right: 5px;" title="Salva la configurazione attuale su file">💾 Salva Modello</button>
-                     <button id="loadConfigBtn" class="secondary" style="font-size: 13px; padding: 8px 14px; margin-right: 5px;" onclick="document.getElementById('configInput').click()" title="Carica una configurazione salvata">📂 Carica Modello</button>
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                     <div class="undo-redo-group">
+                         <button id="undoBtn" class="icon-btn" title="Annulla (Ctrl+Z)" disabled>↩</button>
+                         <button id="redoBtn" class="icon-btn" title="Ripeti (Ctrl+Y)" disabled>↪</button>
+                     </div>
+                     <div style="width:1px; height:24px; background:#cbd5e1; margin:0 3px;"></div>
+                     <button id="saveConfigBtn" class="secondary" style="font-size: 13px; padding: 8px 14px;" title="Salva la configurazione attuale su file (Ctrl+S)">💾 Salva<span class="kbd-hint">Ctrl+S</span></button>
+                     <button id="loadConfigBtn" class="secondary" style="font-size: 13px; padding: 8px 14px;" onclick="document.getElementById('configInput').click()" title="Carica una configurazione salvata">📂 Carica</button>
                      <input type="file" id="configInput" accept=".json" style="display: none"> 
-                     <button id="resetFieldsBtn" class="secondary" style="font-size: 13px; padding: 8px 14px; margin-right: 5px;">🧹 Svuota Campi</button>
-                     <button id="mergeBtn" class="action" style="font-size: 13px; padding: 8px 14px;">🔗 Unisci Selezionati</button>
+                     <button id="resetFieldsBtn" class="secondary" style="font-size: 13px; padding: 8px 14px;">🧹 Svuota</button>
+                     <button id="mergeBtn" class="action" style="font-size: 13px; padding: 8px 14px;">🔗 Unisci</button>
                 </div>
             </div>
 
@@ -346,7 +452,9 @@
             <div style="margin-top: 30px; border-top: 2px dashed var(--border); padding-top: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3 style="margin:0; font-size: 16px; color: #334155;">👁️ Anteprima Live</h3>
-                    <div class="style-bar" style="margin:0; padding: 8px 15px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button id="copyTableBtn" title="Copia tabella negli appunti per incollarla in Word/Excel/PowerPoint">📋 Copia Tabella</button>
+                        <div class="style-bar" style="margin:0; padding: 8px 15px;">
                          <div class="opt-group">
                             <input type="checkbox" id="useColors" checked> <label for="useColors">Colori</label>
                             <input type="color" id="themeColor" value="#0ea5a4" title="Colore Tema">
@@ -376,10 +484,9 @@
                             <input type="checkbox" id="useThousandSep" checked> <label for="useThousandSep" title="Separatore Migliaia">1.000</label>
                             <input type="checkbox" id="useCurrency"> <label for="useCurrency">€</label>
                         </div>
-                    </div>
-                </div>
-
-                <div class="preview-wrapper">
+                        </div><!-- close style-bar -->
+                    </div><!-- close flex wrapper -->
+                </div><!-- close header row -->
                     <div id="preview">
                         <div style="padding: 60px; text-align: center; color: #94a3b8;">
                             <div style="font-size: 40px; margin-bottom: 10px; opacity: 0.5;">📊</div>
@@ -422,6 +529,53 @@
 
 </div> <!-- End Main -->
 
+<!-- MODAL NORMALIZZAZIONE TESTO -->
+<div id="normModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🧹 Normalizzazione Testo</h2>
+      <span class="close-btn" id="closeNormBtn">&times;</span>
+    </div>
+    <div class="modal-body" style="padding: 20px 25px;">
+      <p style="margin:0 0 15px 0; color:#475569; font-size:14px;">
+        Seleziona le operazioni di pulizia da applicare su ciascuna colonna. Le modifiche vengono applicate ai dati in memoria — l'anteprima mostra il risultato prima/dopo.
+      </p>
+      
+      <!-- Select All Bar -->
+      <div class="norm-select-all-bar">
+        <span>APPLICA A TUTTE:</span>
+        <button class="norm-btn-small" onclick="normSelectAll('trim')">✂️ Trim spazi</button>
+        <button class="norm-btn-small" onclick="normSelectAll('upper')">🔠 MAIUSCOLO</button>
+        <button class="norm-btn-small" onclick="normSelectAll('lower')">🔡 minuscolo</button>
+        <button class="norm-btn-small" onclick="normSelectAll('title')">🔤 Prima Lettera</button>
+        <button class="norm-btn-small" onclick="normSelectAll('dedup_spaces')">⎵ Spazi doppi</button>
+        <button class="norm-btn-small" onclick="normSelectAll('normalize_bool')">✔ Sì/No</button>
+        <button class="norm-btn-small" onclick="normSelectAll('remove_punct')">🗑 Rimuovi punct</button>
+        <button class="norm-btn-small" onclick="normSelectAll('none')" style="background:#fee2e2; color:#991b1b; border-color:#fca5a5;">✖ Deseleziona</button>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="norm-table">
+          <thead>
+            <tr>
+              <th style="width:160px;">Colonna</th>
+              <th style="width:70px;">Tipo</th>
+              <th>Operazioni</th>
+              <th style="width:220px;">Anteprima (primo valore)</th>
+            </tr>
+          </thead>
+          <tbody id="normTableBody"></tbody>
+        </table>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; padding-top:15px; border-top:1px solid var(--border);">
+        <button class="secondary" id="closeNormBtn2">Annulla</button>
+        <button id="applyNormBtn" style="background:#f59e0b;">🧹 Applica Normalizzazione</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL HELP DETTAGLIATA -->
 <div id="helpModal" class="modal">
   <div class="modal-content">
@@ -431,40 +585,93 @@
     </div>
     <!-- FIX 4: Aggiornato testo Guida Completa -->
     <div class="modal-body">
+
       <h3>1. Importazione e Pulizia Dati</h3>
       <ul>
-        <li>Trascina il tuo file <b>.CSV</b>. Seleziona le righe che contengono le intestazioni e deseleziona eventuali righe di coda inutili.</li>
-        <li>Verifica nel box verde di riepilogo che i dati siano stati letti correttamente.</li>
+        <li>Trascina il tuo file <b>.CSV</b> nell'area apposita oppure clicca per selezionarlo dal computer.</li>
+        <li>Seleziona le righe che contengono le <b>intestazioni</b> (nomi colonna) usando le checkbox nella tabella superiore. Puoi selezionare più righe se le intestazioni sono su più livelli — verranno unite automaticamente.</li>
+        <li>Nella tabella inferiore, <b>deseleziona</b> eventuali righe finali inutili (totali precalcolati, note, righe vuote di coda).</li>
+        <li>Clicca <b>Conferma Dati</b> e verifica nel box verde il numero di righe e colonne rilevate. Le prime 3 righe vengono mostrate come anteprima.</li>
       </ul>
 
-      <h3>2. Costruzione Report</h3>
+      <h3>2. Normalizzazione Testo 🧹</h3>
+      <p>Prima di costruire il report, puoi pulire i valori testuali del CSV direttamente in memoria cliccando il bottone <b style="background:#fefce8;padding:1px 6px;border-radius:4px;color:#92400e;border:1px solid #fde68a;">🧹 Normalizza Testo</b> nel box di conferma dati.</p>
+      <p>Il pannello mostra una riga per ogni colonna con:</p>
       <ul>
-        <li><b style="color:var(--col-rows)">☰ RIGHE:</b> Trascina qui i campi per raggruppare i dati (es. Agente, Categoria).</li>
-        <li><b style="color:var(--col-cols)">⬌ COLONNE:</b> (Opzionale) Trascina qui un campo per "pivotare" i dati in orizzontale (es. Mesi, Anni).</li>
-        <li><b style="color:var(--col-vals)">∑ VALORI:</b> Trascina qui i dati numerici da calcolare (es. Fatturato).</li>
+        <li><b>Tipo rilevato automaticamente:</b> <span class="tag" style="background:#dbeafe;color:#1d4ed8;">Testo</span>, <span class="tag" style="background:#fef3c7;color:#92400e;">Numerico</span> o <span class="tag" style="background:#f3e8ff;color:#6d28d9;">Misto</span>. Le colonne numeriche mostrano solo le opzioni compatibili.</li>
+        <li><b>Anteprima in tempo reale:</b> mentre spunti le opzioni, vedi subito il valore originale → trasformato (in verde se cambia).</li>
+      </ul>
+      <p>Le operazioni disponibili sono:</p>
+      <ul>
+        <li><span class="tag">✂️ Trim</span> <b>Rimuovi spazi agli estremi:</b> elimina spazi e tabulazioni prima e dopo il testo. Es. <span class="highlight">" Mario Rossi "</span> → <span class="highlight">"Mario Rossi"</span>.</li>
+        <li><span class="tag">⎵ Spazi doppi</span> <b>Rimuovi spazi interni multipli:</b> riduce sequenze di spazi a uno solo. Es. <span class="highlight">"Mario&nbsp;&nbsp;&nbsp;Rossi"</span> → <span class="highlight">"Mario Rossi"</span>. Diverso dal Trim, agisce all'interno della stringa.</li>
+        <li><span class="tag">🔠 Maiuscolo</span> Converte tutto il testo in MAIUSCOLO.</li>
+        <li><span class="tag">🔡 Minuscolo</span> Converte tutto il testo in minuscolo.</li>
+        <li><span class="tag">🔤 Prima Lettera</span> Prima lettera di ogni parola in maiuscolo, il resto minuscolo. Es. <span class="highlight">"MARIO rossi"</span> → <span class="highlight">"Mario Rossi"</span>. Le tre opzioni di capitalizzazione si escludono automaticamente a vicenda.</li>
+        <li><span class="tag">✔ Sì/No</span> <b>Normalizza valori booleani:</b> standardizza tutte le varianti dello stesso concetto. I valori <span class="highlight">si, sì, yes, 1, true, vero, x</span> diventano <b>Sì</b>; i valori <span class="highlight">no, 0, false, falso</span> diventano <b>No</b>. Utile quando lo stesso campo è stato compilato in modi diversi da utenti diversi.</li>
+        <li><span class="tag">🗑 Rimuovi punct</span> <b>Rimuovi punteggiatura:</b> elimina i caratteri <span class="highlight">. , ; : ! ? " ' ( ) [ ] { } - _ / \</span>. Utile per uniformare codici articolo o categorie che contengono separatori inconsistenti.</li>
+      </ul>
+      <p>La barra <b>"Applica a tutte"</b> in cima al pannello permette di spuntare una singola operazione su tutte le colonne in un click. Il bottone <span style="background:#fee2e2;color:#991b1b;padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">✖ Deseleziona</span> azzera tutte le selezioni. Clicca <b>Applica Normalizzazione</b> per confermare — al termine un messaggio mostra quanti valori sono stati modificati e in quali colonne.</p>
+
+      <h3>3. Costruzione Report</h3>
+      <ul>
+        <li><b style="color:var(--col-rows)">☰ RIGHE (Gerarchia):</b> Trascina qui i campi per raggruppare i dati in modo gerarchico. L'ordine conta: il primo campo è il livello più alto (es. Regione → Agente → Prodotto).</li>
+        <li><b style="color:var(--col-cols)">⬌ COLONNE (Opzionale):</b> Trascina qui un campo per "pivotare" i dati in orizzontale, creando una colonna per ogni valore distinto (es. Mesi, Anni, Categorie).</li>
+        <li><b style="color:var(--col-vals)">∑ VALORI (Dati):</b> Trascina qui i campi numerici da aggregare (es. Fatturato, Quantità). Puoi scegliere la funzione: <b>sum</b> (somma), <b>count</b> (conteggio), <b>avg</b> (media), <b>min</b>, <b>max</b>.</li>
+        <li>Usa la <b>barra di ricerca</b> nella lista Disponibili per trovare rapidamente un campo.</li>
+        <li>Il bottone <b>🔗 Unisci</b> permette di combinare più campi testuali in uno solo selezionando le checkbox nella lista Disponibili (es. unire "Nome" e "Cognome").</li>
+        <li>Il bottone <b>🧹 Svuota</b> rimuove tutti i campi dalle tre aree, riportando tutto alla lista Disponibili.</li>
       </ul>
 
-      <h3>3. Opzioni Campi (I Flag)</h3>
-      <p>Ogni campo in "Righe" ha dei pulsanti:</p>
+      <h3>4. Opzioni Campi (I Flag)</h3>
+      <p>Ogni campo trascinato in <b>RIGHE</b> mostra una serie di controlli:</p>
       <ul>
-        <li><span class="tag">V</span> <b>Vuoto se duplicato:</b> Pulisce la visualizzazione nascondendo testi ripetuti.</li>
-        <li><span class="tag">E</span> <b>Espandi:</b> Se spento, mostra solo una riga di sintesi per quel gruppo.
-            <br>• <span class="highlight">SPUNTATO:</span> Mostra l'elenco completo di tutte le righe di dettaglio.
-            <br>• <span class="highlight">NON SPUNTATO:</span> Mostra una sola riga riassuntiva (Sintesi) per quel gruppo.
-        </li>
-        <li><span class="tag">S</span> <b>Subtotale:</b> Aggiunge una riga di totale alla fine del gruppo (visibile solo se il gruppo è espanso e contiene più di una voce).</li>
-        <li><span class="tag">C</span> <b>Compatta:</b> Mette il campo nella stessa colonna del livello superiore.</li>
-        <li><span class="tag">B</span> <b>Grassetto:</b> Evidenzia il testo.</li>
+        <li><span class="tag">A-Z / Z-A</span> <b>Ordinamento:</b> ordine alfabetico crescente o decrescente per quel livello di raggruppamento.</li>
+        <li><span class="tag">V</span> <b>Vuoto se duplicato:</b> nasconde il testo della cella quando il valore è lo stesso della riga precedente, rendendo il report più leggibile.</li>
+        <li><span class="tag">E</span> <b>Espandi:</b> se attivo mostra tutte le righe di dettaglio; se disattivo mostra una sola riga di sintesi per gruppo (con i valori aggregati). Sugli ultimi livelli è modificabile, sui livelli intermedi è sempre attivo.</li>
+        <li><span class="tag">S</span> <b>Subtotale:</b> aggiunge una riga di totale parziale alla fine di ogni gruppo (compare solo se il gruppo ha più di una voce).</li>
+        <li><span class="tag">C</span> <b>Compatta:</b> mette il campo nella stessa colonna del livello superiore invece di usarne una dedicata. Non disponibile sul primo livello.</li>
+        <li><span class="tag">B</span> <b>Grassetto:</b> visualizza i valori di quel livello in grassetto nel report.</li>
+      </ul>
+      <p>I campi in <b>VALORI</b> hanno il flag <span class="tag">%</span> che mostra il dato come percentuale sul totale colonna anziché come valore assoluto.</p>
+
+      <h3>5. Barra degli Strumenti (Anteprima)</h3>
+      <ul>
+        <li><b>Colori / Box:</b> attiva o disattiva lo stile grafico del report. Il selettore colore accanto a "Colori" permette di scegliere il tema cromatico.</li>
+        <li><b>RIGA — Totale:</b> aggiunge una colonna finale con la somma di tutti i valori della riga.</li>
+        <li><b>RIGA — % Incidenza:</b> aggiunge una colonna con il peso percentuale di ogni riga sul totale generale. Attivando questa opzione, "Totale" viene abilitato automaticamente.</li>
+        <li><b>Tot. Gen.:</b> aggiunge la riga finale con il totale di tutto il report.</li>
+        <li><b>Nascondi Vuote:</b> nasconde le colonne il cui totale è zero o vuoto.</li>
+        <li><b>NUMERI — Dec:</b> imposta il numero di decimali (0–4).</li>
+        <li><b>NUMERI — 1.000:</b> attiva il separatore delle migliaia.</li>
+        <li><b>NUMERI — €:</b> aggiunge il simbolo euro ai valori numerici.</li>
       </ul>
 
-      <h3>4. Barra degli Strumenti (Anteprima)</h3>
+      <h3>6. Copia Tabella negli Appunti 📋</h3>
+      <p>Il bottone <b>📋 Copia Tabella</b> accanto al titolo "Anteprima Live" copia la tabella visualizzata negli appunti in due formati simultaneamente:</p>
       <ul>
-        <li><b>Colori / Box:</b> Attiva o disattiva lo stile grafico.</li>
-        <li><b>RIGA (Totale / % Incidenza):</b> Aggiunge alla fine di ogni riga la somma dei valori e/o quanto quella riga pesa sul totale generale.</li>
-        <li><b>Tot. Gen.:</b> Aggiunge la riga finale con la somma di tutto.</li>
-        <li><b>Nascondi Vuote:</b> Nasconde le colonne che hanno valore zero.</li>
-        <li><b>Numeri:</b> Imposta decimali, separatore migliaia e simbolo valuta.</li>
+        <li><b>HTML formattato</b> → incollando in <b>Word</b> o <b>Outlook</b> mantiene colori, bordi e grassetti esattamente come nell'anteprima.</li>
+        <li><b>Testo tabulato (TSV)</b> → incollando in <b>Excel</b> o <b>Google Sheets</b> distribuisce automaticamente i dati nelle celle corrette.</li>
       </ul>
+      <p>Il bottone si trasforma in "✅ Copiata!" per confermare l'operazione. Se il browser non supporta la clipboard avanzata, viene usato un metodo di fallback compatibile.</p>
+
+      <h3>7. Annulla / Ripeti (Undo/Redo)</h3>
+      <p>I pulsanti <b>↩</b> e <b>↪</b> nella barra degli strumenti (o i tasti <span class="tag">Ctrl+Z</span> / <span class="tag">Ctrl+Y</span>) permettono di annullare o ripetere le modifiche alla struttura del report: drag & drop dei campi, rimozioni, riordinamenti. Lo storico mantiene fino a 40 stati.</p>
+
+      <h3>8. Salva e Carica Modello</h3>
+      <ul>
+        <li><b>💾 Salva</b> (o <span class="tag">Ctrl+S</span>): salva la configurazione attuale (campi, flag, opzioni) in un file <b>.json</b> sul tuo computer.</li>
+        <li><b>📂 Carica:</b> ricarica una configurazione salvata in precedenza. Se il CSV caricato contiene gli stessi campi, il report viene ricostruito automaticamente, compresi gli eventuali campi uniti.</li>
+      </ul>
+
+      <h3>9. Export Finale</h3>
+      <ul>
+        <li><b>📥 Scarica Excel:</b> genera un file <b>.xlsx</b> con intestazioni colorate, subtotali con formule SUBTOTAL (aggiornabili in Excel), formattazione numerica e larghezze colonne ottimizzate automaticamente.</li>
+        <li><b>📄 Scarica PDF:</b> genera un file <b>.pdf</b> in formato landscape con la stessa struttura del report. Ideale per stampa o invio.</li>
+        <li>Prima di scaricare puoi modificare il <b>nome del file</b> nel campo di testo apposito.</li>
+        <li>Usa <span class="tag">Ctrl+Invio</span> per passare rapidamente allo step successivo senza usare il mouse.</li>
+      </ul>
+
     </div>
   </div>
 </div>
@@ -476,6 +683,73 @@ const app = (() => {
     const nodes = ["available","rows","cols","values"].reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
     let currentStep = 1;
     let loadedFileName = "";
+
+    // ===== TOAST SYSTEM =====
+    function showToast(msg, type = 'info', duration = 3500) {
+        const tc = document.getElementById('toast-container');
+        const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+        tc.appendChild(t);
+        setTimeout(() => {
+            t.classList.add('toast-out');
+            t.addEventListener('animationend', () => t.remove());
+        }, duration);
+    }
+
+    // ===== LOADING SPINNER =====
+    function showLoading(msg = 'Generazione in corso...') {
+        document.getElementById('loading-label').textContent = msg;
+        document.getElementById('loading-overlay').classList.add('active');
+    }
+    function hideLoading() {
+        document.getElementById('loading-overlay').classList.remove('active');
+    }
+
+    // ===== UNDO/REDO SYSTEM =====
+    const history = [];
+    let historyIndex = -1;
+    let _skipSnapshot = false;
+
+    function takeSnapshot() {
+        if (_skipSnapshot) return;
+        const snap = JSON.stringify(getSettings());
+        // Remove future history if we branched
+        history.splice(historyIndex + 1);
+        history.push(snap);
+        if (history.length > 40) history.shift();
+        historyIndex = history.length - 1;
+        updateUndoRedoBtns();
+    }
+
+    function updateUndoRedoBtns() {
+        document.getElementById('undoBtn').disabled = historyIndex <= 0;
+        document.getElementById('redoBtn').disabled = historyIndex >= history.length - 1;
+    }
+
+    function doUndo() {
+        if (historyIndex <= 0) return;
+        historyIndex--;
+        _skipSnapshot = true;
+        applySettings(JSON.parse(history[historyIndex]));
+        _skipSnapshot = false;
+        updateUndoRedoBtns();
+        showToast('Azione annullata', 'info', 2000);
+    }
+
+    function doRedo() {
+        if (historyIndex >= history.length - 1) return;
+        historyIndex++;
+        _skipSnapshot = true;
+        applySettings(JSON.parse(history[historyIndex]));
+        _skipSnapshot = false;
+        updateUndoRedoBtns();
+        showToast('Azione ripristinata', 'info', 2000);
+    }
+
+    document.getElementById('undoBtn').addEventListener('click', doUndo);
+    document.getElementById('redoBtn').addEventListener('click', doRedo);
 
     // --- TOGGLE DEPENDENCY ---
     const rowTotChk = document.getElementById("showRowTot");
@@ -491,8 +765,8 @@ const app = (() => {
 
     // --- STEP NAVIGATION ---
     function goToStep(n) {
-        if (n > 1 && rawData.length === 0) return alert("Carica e conferma prima i dati!");
-        if (n > 2 && !validateStructure()) return alert("Definisci Righe e Valori prima di esportare!");
+        if (n > 1 && rawData.length === 0) { showToast('Carica e conferma prima i dati!', 'warning'); return; }
+        if (n > 2 && !validateStructure()) { showToast('Definisci Righe e Valori prima di esportare!', 'warning'); return; }
         
         currentStep = n;
         updateUI();
@@ -578,7 +852,7 @@ const app = (() => {
    // --- MERGE LOGIC UPDATED (TRACKING RECIPES) ---
     document.getElementById("mergeBtn").onclick = () => {
         const checked = Array.from(nodes.available.querySelectorAll(".m-chk:checked"));
-        if(checked.length < 2) return alert("Seleziona almeno 2 campi disponibili (checkbox) da unire.");
+        if(checked.length < 2) { showToast('Seleziona almeno 2 campi disponibili (checkbox) da unire.', 'warning'); return; }
         
         // Ordine dei campi basato sull'ordine visivo o di selezione
         // Qui usiamo l'ordine in cui li trova nel DOM (quindi l'ordine originale o ordinato)
@@ -634,18 +908,40 @@ const app = (() => {
     });
 
     // --- DRAG & DROP ---
+    // Snapshot strategy: capture state BEFORE each drag action in onStart.
+    // onAdd/onSort/onRemove only update UI - no extra snapshot needed.
     new Sortable(nodes.available, {
         group: { name: 'shared', pull: 'clone', put: false }, 
         animation: 150,
-        sort: false
+        sort: false,
+        ghostClass: 'sortable-ghost',
+        onStart: () => { takeSnapshot(); }
     });
 
     ["rows","cols","values"].forEach(id => {
         new Sortable(document.getElementById(id), { 
             group: "shared", animation: 150, handle: ".item", 
-            onAdd: (e) => { updateItemUI(e.item, e.to.id); updateRowFlags(); updateAdvisor(); validateStructure(); renderPreview(); },
+            ghostClass: 'sortable-ghost',
+            onStart: () => { takeSnapshot(); },
+            onAdd: (e) => { 
+                updateItemUI(e.item, e.to.id); 
+                // Hide the source item in the available list (it was cloned)
+                const field = e.item.getAttribute('data-field');
+                if (field) removeFromAvailable(field);
+                updateRowFlags(); updateAdvisor(); validateStructure(); renderPreview(); 
+            },
             onSort: () => { updateRowFlags(); updateAdvisor(); validateStructure(); renderPreview(); },
-            onRemove: () => { updateAdvisor(); validateStructure(); renderPreview(); }
+            onRemove: (e) => { 
+                // If item was moved back to available or deleted, restore visibility in available
+                const field = e.item.getAttribute('data-field');
+                if (field && e.to === nodes.available) {
+                    // moved back to available - show it, hide the dropped one
+                    const avItem = nodes.available.querySelector(`.item[data-field="${field.replace(/"/g, '&quot;')}"]`);
+                    if (avItem) avItem.style.display = '';
+                    e.item.remove(); // remove the dragged-back clone
+                }
+                updateAdvisor(); validateStructure(); renderPreview(); 
+            }
         }); 
     });
 
@@ -668,7 +964,14 @@ const app = (() => {
         removeBtn.innerHTML = "X";
         removeBtn.title = "Rimuovi campo";
         removeBtn.onclick = function() {
+            takeSnapshot(); // snapshot BEFORE removing
+            const field = item.getAttribute('data-field');
             item.remove();
+            // Restore field in available list
+            if (field) {
+                const avItem = nodes.available.querySelector(`.item[data-field="${field.replace(/"/g, '&quot;')}"]`);
+                if (avItem) { avItem.style.display = ''; }
+            }
             updateAdvisor();
             validateStructure();
             renderPreview();
@@ -737,10 +1040,12 @@ const app = (() => {
 
     document.getElementById("confirmConfigBtn").onclick = () => {
         const hIdx = Array.from(document.querySelectorAll(".h-chk:checked")).map(c => +c.value); const tExcl = Array.from(document.querySelectorAll(".t-chk:not(:checked)")).map(c => +c.value);
-        if(!hIdx.length) return alert("Seleziona la riga di intestazione.");
+        if(!hIdx.length) { showToast('Seleziona almeno una riga di intestazione.', 'warning'); return; }
         headers = []; const nCols = fullArray[hIdx[0]].length;
+        if(nCols === 0) { showToast('Il file CSV sembra vuoto o non ha colonne rilevabili.', 'error'); return; }
         for(let c=0; c<nCols; c++){ let parts = []; hIdx.forEach(r => { let v = (fullArray[r][c]||"").trim(); if(!v && c > 0) { for(let p=c-1; p>=0; p--) if(fullArray[r][p]){ v=fullArray[r][p]; break; } } if(v && !parts.includes(v)) parts.push(v); }); headers.push(parts.join(" ") || "Col " + c); }
         rawData = []; const maxH = Math.max(...hIdx); fullArray.forEach((r, i) => { if(i > maxH && !hIdx.includes(i) && !tExcl.includes(i)) { let obj = {}; headers.forEach((h, idx) => obj[h] = r[idx]); rawData.push(obj); } });
+        if(rawData.length === 0) { showToast('Nessuna riga dati trovata dopo le intestazioni selezionate.', 'error'); return; }
         
         document.getElementById("csvConfigSection").style.display = "none";
         const confBox = document.getElementById("dataConfirmationBox");
@@ -763,6 +1068,9 @@ const app = (() => {
 
         renderAvailable();
         updateAdvisor();
+        showToast(`${rawData.length.toLocaleString('it-IT')} righe e ${headers.length} colonne caricate con successo!`, 'success');
+        // Take the initial snapshot (empty configuration state)
+        takeSnapshot();
     };
 
     function renderAvailable() { 
@@ -898,10 +1206,17 @@ const app = (() => {
         const tbl = document.createElement("table"); tbl.className = "preview";
         let trH = document.createElement("tr"); 
         for(let i=0; i<count; i++) { const names = s.rows.filter((_, idx) => map[idx] === i).map(x => x.field); trH.innerHTML += `<th style="background:${headerBg}; color:${headerText}">${names.join(" / ")}</th>`; }
-        activeCols.forEach(col => {
+        activeCols.forEach((col, colIdx) => {
             let label = col.isDummy ? col.key : ((col.key === "") ? col.val.field : `${col.key}<br>${col.val.field}`);
             if(col.val.isPct) label += " (%)";
-            trH.innerHTML += `<th style="background:${headerBg}; color:${headerText}">${label}</th>`;
+            const th = document.createElement('th');
+            th.className = 'sortable-col';
+            th.style.background = headerBg;
+            th.style.color = headerText;
+            th.innerHTML = label + `<span class="sort-arrow" data-col="${count + colIdx}">⇅</span>`;
+            th.dataset.colIdx = count + colIdx;
+            th.title = 'Clicca per ordinare';
+            trH.appendChild(th);
         });
         if(s.rowTot) trH.innerHTML += `<th style="background:${headerBg}; color:${headerText}">TOTALE</th>`;
         if(s.rowTotPct) trH.innerHTML += `<th style="background:${headerBg}; color:${headerText}">% INCID.</th>`;
@@ -1025,12 +1340,41 @@ const app = (() => {
             tbl.appendChild(trGT);
         }
         div.appendChild(tbl);
+
+        // ===== CLICK-TO-SORT on data columns =====
+        let _sortState = { col: -1, dir: 1 };
+        trH.querySelectorAll('th.sortable-col').forEach(th => {
+            th.addEventListener('click', () => {
+                const ci = parseInt(th.dataset.colIdx);
+                if (_sortState.col === ci) _sortState.dir *= -1;
+                else { _sortState.col = ci; _sortState.dir = 1; }
+                const arrow = th.querySelector('.sort-arrow');
+                trH.querySelectorAll('.sort-arrow').forEach(a => a.textContent = '⇅');
+                arrow.textContent = _sortState.dir === 1 ? '↑' : '↓';
+                const rows = Array.from(tbl.querySelectorAll('tr:not(:first-child)'));
+                const isLastOrGrandTotal = r => r.classList.contains('row-grand-total');
+                const staticRows = rows.filter(isLastOrGrandTotal);
+                const sortableRows = rows.filter(r => !isLastOrGrandTotal(r));
+                sortableRows.sort((a, b) => {
+                    const aCell = a.cells[ci]; const bCell = b.cells[ci];
+                    if (!aCell || !bCell) return 0;
+                    const aRaw = aCell.textContent.replace(/[^\d,.-]/g,'').replace(',','.');
+                    const bRaw = bCell.textContent.replace(/[^\d,.-]/g,'').replace(',','.');
+                    const aNum = parseFloat(aRaw), bNum = parseFloat(bRaw);
+                    if (!isNaN(aNum) && !isNaN(bNum)) return (aNum - bNum) * _sortState.dir;
+                    return aCell.textContent.localeCompare(bCell.textContent) * _sortState.dir;
+                });
+                sortableRows.forEach(r => tbl.appendChild(r));
+                staticRows.forEach(r => tbl.appendChild(r));
+            });
+        });
     }
 
        // --- EXCEL EXPORT (ALL FEATURES CONSOLIDATED) ---
     document.getElementById("exportBtn").onclick = async () => {
         try {
             const s = getSettings(); if(!rawData.length) return;
+            showLoading('Generazione Excel in corso...');
             
             // 1. Setup Colors
             let baseArgb='FFFFFFFF', fontArgb='FF000000', pastelArgb='FFFFFFFF'; 
@@ -1449,16 +1793,23 @@ const app = (() => {
             
             ws.columns.forEach(col => { let max = 10; col.eachCell({includeEmpty:true}, c => { const l=c.value?c.value.toString().length:0; if(l>max) max=l; }); col.width = Math.min(max + 2, 50); });
             
-            const buf = await wb.xlsx.writeBuffer(); saveAs(new Blob([buf]), document.getElementById("outname").value + ".xlsx");
+            const buf = await wb.xlsx.writeBuffer(); 
+            saveAs(new Blob([buf]), document.getElementById("outname").value + ".xlsx");
+            hideLoading();
+            showToast('File Excel scaricato con successo!', 'success');
         } catch(e) {
             console.error(e);
-            alert("Errore durante l'export Excel: " + e.message);
+            hideLoading();
+            showToast('Errore durante l\'export Excel: ' + e.message, 'error', 6000);
         }
     };
 
     // --- PDF EXPORT ---
-    document.getElementById("exportPdfBtn").onclick = () => {
+    document.getElementById("exportPdfBtn").onclick = async () => {
         const s = getSettings(); if(!rawData.length) return;
+        showLoading('Generazione PDF in corso...');
+        await new Promise(r => setTimeout(r, 50)); // let UI update
+        try {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l'); // Landscape
 
@@ -1636,17 +1987,23 @@ const app = (() => {
         });
 
         doc.save(document.getElementById("outname").value + ".pdf");
+        hideLoading();
+        showToast('File PDF scaricato con successo!', 'success');
+        } catch(e) {
+            console.error(e);
+            hideLoading();
+            showToast('Errore durante l\'export PDF: ' + e.message, 'error', 6000);
+        }
     };
     // --- PERSISTENZA (SALVA / CARICA MODELLO) ---
 
     // 1. SALVA CONFIGURAZIONE
     document.getElementById("saveConfigBtn").onclick = () => {
-        // Chiedi il nome file
-        let fileName = prompt("Scegli il nome del file modello:", "Modello_Report");
-        if(fileName === null) return; // Annullato dall'utente
-        
-        // Pulizia nome e estensione
-        if(!fileName.trim()) fileName = "Modello_Report";
+        let fileName = "Modello_Report";
+        // Use a simple inline prompt via toast approach - still need a name but use a default
+        const nameInput = window.prompt ? window.prompt("Nome file modello:", "Modello_Report") : "Modello_Report";
+        if(nameInput === null) return;
+        fileName = nameInput.trim() || "Modello_Report";
         if(!fileName.endsWith(".json")) fileName += ".json";
 
         const s = getSettings();
@@ -1659,12 +2016,7 @@ const app = (() => {
         
         const blob = new Blob([JSON.stringify(exportData, null, 2)], {type: "application/json"});
         saveAs(blob, fileName);
-
-        // --- NUOVO AVVISO PER L'UTENTE ---
-        // Usiamo un piccolo timeout per dare tempo al browser di far partire l'animazione di download
-        setTimeout(() => {
-            alert(`✅ Modello salvato con successo!\n\nNome file: ${fileName}\nPosizione: Controlla la cartella "Download" del tuo computer.`);
-        }, 100);
+        showToast(`Modello salvato: <b>${fileName}</b>`, 'success');
     };
 
     // 2. CARICA CONFIGURAZIONE
@@ -1700,10 +2052,11 @@ const app = (() => {
 
                 // B. APPLICA IL RESTO
                 applySettings(data.config);
-                alert("Modello caricato con successo! ✅\nCampi uniti ripristinati: " + (data.merges ? data.merges.length : 0));
+                const mergeCount = data.merges ? data.merges.length : 0;
+                showToast(`Modello caricato! ${mergeCount > 0 ? mergeCount + ' campi uniti ripristinati.' : ''}`, 'success');
             } catch(err) {
                 console.error(err);
-                alert("Errore nel caricamento del file: " + err.message);
+                showToast('Errore nel caricamento del file: ' + err.message, 'error', 6000);
             }
             e.target.value = '';
         };
@@ -1733,7 +2086,9 @@ const app = (() => {
         nodes.values.innerHTML = "";
         
         // Aggiorna la lista disponibili (ora include anche i campi uniti appena ricreati)
-        renderAvailable(); 
+        renderAvailable();
+        // Reset visibility of all available items before hiding used ones
+        Array.from(nodes.available.children).forEach(el => { el.style.display = ''; });
 
         // 3. Ricostruisce RIGHE
         s.rows.forEach(r => {
@@ -1791,7 +2146,16 @@ const app = (() => {
         const removeBtn = document.createElement("span");
         removeBtn.className = "remove-btn";
         removeBtn.innerHTML = "X";
-        removeBtn.onclick = function() { d.remove(); updateAdvisor(); validateStructure(); renderPreview(); };
+        removeBtn.onclick = function() { 
+            takeSnapshot(); 
+            const field = d.getAttribute('data-field');
+            d.remove(); 
+            if (field) {
+                const avItem = nodes.available.querySelector(`.item[data-field="${field.replace(/"/g, '&quot;')}"]`);
+                if (avItem) avItem.style.display = '';
+            }
+            updateAdvisor(); validateStructure(); renderPreview(); 
+        };
 
         if(targetId === 'rows') {
             const ctrl = document.createElement("div"); ctrl.className = "item-controls";
@@ -1820,9 +2184,269 @@ const app = (() => {
     }
 
     function removeFromAvailable(field) {
-        const chk = nodes.available.querySelector(`.m-chk[value="${field.replace(/"/g, '&quot;')}"]`);
-        if(chk) chk.checked = true; 
+        const escapedField = field.replace(/"/g, '&quot;');
+        const item = nodes.available.querySelector(`.item[data-field="${escapedField}"]`);
+        if (item) {
+            item.style.display = 'none';
+            const chk = item.querySelector('.m-chk');
+            if (chk) chk.checked = false; // reset checkbox so it's clean if re-shown
+        }
     }
+
+    // ===== KEYBOARD SHORTCUTS =====
+    document.addEventListener('keydown', (e) => {
+        const tag = document.activeElement.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); doUndo(); }
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); doRedo(); }
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); document.getElementById('saveConfigBtn').click(); }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); if (currentStep === 2) app.goToStep(3); else if (currentStep === 1) app.goToStep(2); }
+    });
+
+
+    // ===== NORMALIZZAZIONE TESTO =====
+    
+    // Detect column type based on sample values
+    function detectColType(field) {
+        const samples = rawData.slice(0, 50).map(r => (r[field] || '').toString().trim()).filter(v => v !== '');
+        if (samples.length === 0) return 'text';
+        const numCount = samples.filter(v => !isNaN(parseNumber(v))).length;
+        const ratio = numCount / samples.length;
+        if (ratio > 0.85) return 'num';
+        if (ratio > 0.3) return 'mixed';
+        return 'text';
+    }
+
+    // Apply a single normalization op to a string
+    function applyNormOp(val, ops) {
+        let v = (val || '').toString();
+        if (ops.trim)        v = v.trim();
+        if (ops.dedup_spaces) v = v.replace(/\s+/g, ' ');
+        if (ops.upper)       v = v.toUpperCase();
+        if (ops.lower)       v = v.toLowerCase();
+        if (ops.title)       v = v.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
+        if (ops.remove_punct) v = v.replace(/[.,;:!?"'()\[\]{}\-_\/\\]/g, '');
+        if (ops.normalize_bool) {
+            const low = v.toLowerCase().trim();
+            if (['si','sì','yes','1','true','vero','x'].includes(low)) v = 'Sì';
+            else if (['no','0','false','falso'].includes(low)) v = 'No';
+        }
+        return v;
+    }
+
+    // Build the normalization modal table
+    function buildNormTable() {
+        const tbody = document.getElementById('normTableBody');
+        tbody.innerHTML = '';
+        headers.forEach(field => {
+            const type = detectColType(field);
+            const typeLabel = type === 'num' ? '<span class="col-type norm-type-num">Numerico</span>' 
+                            : type === 'mixed' ? '<span class="col-type norm-type-mixed">Misto</span>'
+                            : '<span class="col-type norm-type-text">Testo</span>';
+            
+            // Get first non-empty sample value
+            const sample = rawData.map(r => (r[field] || '').toString().trim()).find(v => v !== '') || '';
+            const escapedField = field.replace(/"/g, '&quot;');
+            const isNum = type === 'num';
+
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-field', field);
+            tr.innerHTML = `
+                <td class="col-name" title="${field}">${field}</td>
+                <td>${typeLabel}</td>
+                <td>
+                    <div class="norm-chk-group">
+                        <label title="Rimuove spazi iniziali e finali"><input type="checkbox" class="norm-op" data-op="trim" checked> ✂️ Trim</label>
+                        <label title="Rimuove spazi doppi interni"><input type="checkbox" class="norm-op" data-op="dedup_spaces"> ⎵ Spazi doppi</label>
+                        ${!isNum ? `<label title="Converte tutto in MAIUSCOLO"><input type="checkbox" class="norm-op" data-op="upper"> 🔠 Maiuscolo</label>
+                        <label title="Converte tutto in minuscolo"><input type="checkbox" class="norm-op" data-op="lower"> 🔡 Minuscolo</label>
+                        <label title="Prima lettera maiuscola per ogni parola"><input type="checkbox" class="norm-op" data-op="title"> 🔤 Prima lettera</label>
+                        <label title="Normalizza Sì/No (si, yes, 1, true → Sì)"><input type="checkbox" class="norm-op" data-op="normalize_bool"> ✔ Sì/No</label>
+                        <label title="Rimuove punteggiatura (.,:;!?...)"><input type="checkbox" class="norm-op" data-op="remove_punct"> 🗑 Rimuovi punct</label>` : ''}
+                    </div>
+                </td>
+                <td id="norm-prev-${field.replace(/\W/g,'_')}">
+                    <span class="norm-preview-cell">${sample}</span>
+                    <span class="norm-preview-arrow">→</span>
+                    <span class="norm-preview-cell norm-after">${sample}</span>
+                </td>
+            `;
+
+            // Live preview update
+            tr.querySelectorAll('.norm-op').forEach(chk => {
+                chk.addEventListener('change', () => updateNormPreview(tr, field, sample));
+                // mutual exclusion: upper/lower/title are mutually exclusive
+                if (['upper','lower','title'].includes(chk.dataset.op)) {
+                    chk.addEventListener('change', () => {
+                        if (chk.checked) {
+                            ['upper','lower','title'].filter(o => o !== chk.dataset.op).forEach(o => {
+                                const other = tr.querySelector(`.norm-op[data-op="${o}"]`);
+                                if (other) other.checked = false;
+                            });
+                        }
+                        updateNormPreview(tr, field, sample);
+                    });
+                }
+            });
+
+            tbody.appendChild(tr);
+            updateNormPreview(tr, field, sample);
+        });
+    }
+
+    function updateNormPreview(tr, field, sample) {
+        const ops = getNormOpsForRow(tr);
+        const result = applyNormOp(sample, ops);
+        const afterEl = tr.querySelector('.norm-after');
+        if (afterEl) {
+            afterEl.textContent = result;
+            afterEl.style.color = result !== sample ? '#0f766e' : '#94a3b8';
+            afterEl.style.fontWeight = result !== sample ? '700' : '';
+        }
+    }
+
+    function getNormOpsForRow(tr) {
+        const ops = {};
+        tr.querySelectorAll('.norm-op:checked').forEach(chk => { ops[chk.dataset.op] = true; });
+        return ops;
+    }
+
+    // "Select all" helper
+    window.normSelectAll = function(op) {
+        document.querySelectorAll('#normTableBody tr').forEach(tr => {
+            if (op === 'none') {
+                tr.querySelectorAll('.norm-op').forEach(c => { c.checked = false; });
+            } else {
+                // mutual exclusion
+                if (['upper','lower','title'].includes(op)) {
+                    ['upper','lower','title'].forEach(o => {
+                        const c = tr.querySelector(`.norm-op[data-op="${o}"]`);
+                        if (c) c.checked = false;
+                    });
+                }
+                const target = tr.querySelector(`.norm-op[data-op="${op}"]`);
+                if (target) target.checked = true;
+            }
+            const field = tr.getAttribute('data-field');
+            const sample = rawData.map(r => (r[field] || '').toString().trim()).find(v => v !== '') || '';
+            updateNormPreview(tr, field, sample);
+        });
+    };
+
+    // Open normalization modal
+    document.getElementById('openNormBtn').addEventListener('click', () => {
+        buildNormTable();
+        document.getElementById('normModal').style.display = 'block';
+    });
+
+    // Close handlers
+    document.getElementById('closeNormBtn').addEventListener('click', () => { document.getElementById('normModal').style.display = 'none'; });
+    document.getElementById('closeNormBtn2').addEventListener('click', () => { document.getElementById('normModal').style.display = 'none'; });
+    document.getElementById('normModal').addEventListener('click', (e) => { if (e.target === document.getElementById('normModal')) document.getElementById('normModal').style.display = 'none'; });
+
+    // Apply normalization
+    document.getElementById('applyNormBtn').addEventListener('click', () => {
+        let totalChanges = 0;
+        const modifiedFields = [];
+
+        document.querySelectorAll('#normTableBody tr').forEach(tr => {
+            const field = tr.getAttribute('data-field');
+            const ops = getNormOpsForRow(tr);
+            if (Object.keys(ops).length === 0) return;
+
+            let fieldChanges = 0;
+            rawData.forEach(row => {
+                const original = (row[field] || '').toString();
+                const normalized = applyNormOp(original, ops);
+                if (normalized !== original) {
+                    row[field] = normalized;
+                    fieldChanges++;
+                }
+            });
+
+            if (fieldChanges > 0) {
+                totalChanges += fieldChanges;
+                modifiedFields.push(`${field} (${fieldChanges} val.)`);
+            }
+        });
+
+        document.getElementById('normModal').style.display = 'none';
+
+        if (totalChanges === 0) {
+            showToast('Nessun valore modificato — i dati erano già normalizzati.', 'info');
+        } else {
+            showToast(`✅ ${totalChanges} valori normalizzati in ${modifiedFields.length} colonne: ${modifiedFields.slice(0,3).join(', ')}${modifiedFields.length > 3 ? '...' : ''}`, 'success', 5000);
+            // Refresh mini preview and live preview
+            const mp = document.getElementById('miniPreviewTable');
+            if (mp) {
+                mp.innerHTML = '';
+                const hr = document.createElement('tr'); headers.forEach(h => hr.innerHTML += `<th>${h}</th>`); mp.appendChild(hr);
+                rawData.slice(0,3).forEach(row => { const tr = document.createElement('tr'); headers.forEach(h => tr.innerHTML += `<td>${row[h]||''}</td>`); mp.appendChild(tr); });
+            }
+            renderPreview();
+        }
+    });
+
+
+    // ===== COPIA TABELLA NEGLI APPUNTI =====
+    document.getElementById('copyTableBtn').addEventListener('click', () => {
+        const tbl = document.querySelector('#preview table.preview');
+        if (!tbl) { showToast('Nessuna tabella da copiare. Configura prima il report.', 'warning'); return; }
+
+        // Build plain text (TSV) — paste-friendly in Excel, Word, Sheets
+        const rows = Array.from(tbl.querySelectorAll('tr'));
+        const tsv = rows.map(tr => 
+            Array.from(tr.querySelectorAll('th, td'))
+                .map(cell => cell.innerText.replace(/\n/g, ' ').trim())
+                .join('\t')
+        ).join('\n');
+
+        // Build HTML table for rich paste (Word/Outlook keep formatting)
+        const htmlTable = `<meta charset="utf-8"><style>
+            table{border-collapse:collapse;font-family:Segoe UI,sans-serif;font-size:12px;}
+            th,td{border:1px solid #cbd5e1;padding:6px 10px;}
+            th{font-weight:700;}
+        </style>${tbl.outerHTML}`;
+
+        if (navigator.clipboard && navigator.clipboard.write) {
+            const textBlob = new Blob([tsv], { type: 'text/plain' });
+            const htmlBlob = new Blob([htmlTable], { type: 'text/html' });
+            navigator.clipboard.write([
+                new ClipboardItem({ 'text/plain': textBlob, 'text/html': htmlBlob })
+            ]).then(() => {
+                showToast('📋 Tabella copiata! Incolla in Word, Excel o PowerPoint.', 'success', 4000);
+                const btn = document.getElementById('copyTableBtn');
+                const orig = btn.textContent;
+                btn.textContent = '✅ Copiata!';
+                btn.style.background = '#f0fdf4';
+                btn.style.color = '#15803d';
+                setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2500);
+            }).catch(() => fallbackCopy(tsv));
+        } else {
+            fallbackCopy(tsv);
+        }
+    });
+
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showToast('📋 Tabella copiata (formato testo). Incolla in Excel o Word.', 'success', 4000);
+        } catch(e) {
+            showToast('Impossibile copiare automaticamente. Prova Ctrl+A sulla tabella.', 'error');
+        }
+        document.body.removeChild(ta);
+    }
+
+    // ===== HOOK renderPreview to take snapshots =====
+    const _originalRenderPreview = renderPreview;
+    // Wrap renderPreview to auto-snapshot after drag/change events
+    // Snapshot is taken by Sortable onEnd and item changes
+
     return { goToStep };
 })();
 </script>
