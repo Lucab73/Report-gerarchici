@@ -107,9 +107,12 @@
  .item { padding: 8px 10px; margin-bottom: 8px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; cursor: grab; font-size: 12px; display: flex; align-items: center; gap: 10px; user-select: none; transition: 0.1s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
  .item:hover { border-color: var(--primary); transform: translateY(-1px); }
  .item b { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #334155; }
- 
- .item-controls { display: flex; align-items: center; gap: 3px; flex-wrap: nowrap; white-space: nowrap; }
- .item-controls label { font-size: 10px; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; border: 1px solid #cbd5e1; cursor: pointer; color: #64748b; display: flex; align-items: center; gap: 3px; font-weight: 600; min-width: max-content;}
+ .item.item-configured { flex-direction: column; align-items: stretch; gap: 4px; }
+ .item-top-row { display: flex; align-items: center; gap: 6px; width: 100%; min-width: 0; }
+ .item-top-row b { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #334155; }
+
+ .item-controls { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; padding-top: 4px; border-top: 1px solid #f1f5f9; }
+ .item-controls label { font-size: 10px; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; border: 1px solid #cbd5e1; cursor: pointer; color: #64748b; display: flex; align-items: center; gap: 3px; font-weight: 600; white-space: nowrap; }
  .item-controls label:hover { border-color: var(--primary); color: var(--primary-dark); background: #f0fdfa; }
  .item-controls input { margin: 0; width: 12px; height: 12px; accent-color: var(--primary); }
  .item select { font-size: 11px; padding: 3px; border: 1px solid #cbd5e1; border-radius: 4px; background: #f8fafc; color: #334155; font-weight: 600;}
@@ -281,6 +284,39 @@
 
  /* ===== KEYBOARD SHORTCUT HINT ===== */
  .kbd-hint { font-size: 10px; color: #94a3b8; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 3px; padding: 1px 5px; font-family: monospace; margin-left: 4px; }
+
+ /* ===== MODE SELECTOR ===== */
+ .mode-selector { display: flex; gap: 20px; margin: 10px 0; }
+ .mode-card { flex: 1; border: 2px solid var(--border); border-radius: 12px; padding: 28px 20px; text-align: center; cursor: pointer; transition: 0.25s; background: white; }
+ .mode-card:hover { border-color: var(--primary); background: #f0fdfa; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.07); }
+ .mode-card.selected { border-color: var(--primary); background: #f0fdfa; box-shadow: 0 0 0 3px rgba(14,165,164,0.15); }
+ .mode-card-icon { font-size: 42px; margin-bottom: 12px; }
+ .mode-card-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+ .mode-card-desc { font-size: 13px; color: #64748b; }
+
+ /* ===== FILE SECTION HEADERS ===== */
+ .file-section-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding: 10px 16px; border-radius: 8px; border: 1px solid; }
+ .file-section-hdr.f1 { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+ .file-section-hdr.f2 { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; }
+
+ /* ===== F1 / F2 FIELD BADGES ===== */
+ .field-badge { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-right: 4px; flex-shrink: 0; }
+ .badge-f1  { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+ .badge-f2  { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+ .badge-join{ background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+
+ /* ===== JOIN CONFIG ===== */
+ .join-pair-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+ .join-pair-row select { flex: 1; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-weight: 600; background: white; }
+ .join-pair-arrow { font-size: 18px; color: #94a3b8; flex-shrink: 0; }
+ .cardinality-badge { font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; }
+ .card-1-1 { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+ .card-1-n { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+ .card-n-1 { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+ .card-n-m { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+ .card-none { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+ .join-stats { font-size: 12px; color: #475569; background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; margin-top: 10px; display: flex; gap: 20px; flex-wrap: wrap; }
+ .join-stat-item b { color: var(--primary-dark); }
 </style>
 </head>
 <body>
@@ -329,66 +365,210 @@
             <span class="accordion-status" id="status-step1" style="display:none">✅ Dati Pronti</span>
         </div>
         <div class="accordion-body">
-            <div class="file-drop-zone" id="dropZone">
-                <input id="file" type="file" accept=".csv,text/csv">
-                <div style="font-size: 48px; margin-bottom: 15px;">📄</div>
-                <div class="file-msg" style="font-weight: 700; color: #334155; font-size: 18px;">Trascina qui il file CSV</div>
-                <div style="font-size: 13px; color: #94a3b8; margin-top: 5px;">oppure clicca per selezionare dal computer</div>
+
+            <!-- ===== MODE SELECTOR ===== -->
+            <div id="modeSelector">
+                <p style="font-weight:700; color:#475569; margin:0 0 14px 0; font-size:15px;">Come vuoi lavorare?</p>
+                <div class="mode-selector">
+                    <div class="mode-card" id="modeCard1" onclick="app.selectMode(1)">
+                        <div class="mode-card-icon">📄</div>
+                        <div class="mode-card-title">Un file CSV</div>
+                        <div class="mode-card-desc">Carica un singolo file e costruisci il report</div>
+                    </div>
+                    <div class="mode-card" id="modeCard2" onclick="app.selectMode(2)">
+                        <div class="mode-card-icon">📄📄</div>
+                        <div class="mode-card-title">Due file CSV</div>
+                        <div class="mode-card-desc">Unisci due file su colonne comuni e crea un report con campi da entrambi</div>
+                    </div>
+                </div>
             </div>
 
-            <div id="csvConfigSection" style="display: none; margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
-                <h3 style="color: var(--primary-dark); margin: 0 0 20px 0; font-size: 16px;">⚙️ Configurazione Intestazioni</h3>
-                
-                <p class="config-instr">1. Seleziona le righe dei nomi colonna:</p>
-                <!-- FIX 1: Aumentata altezza box intestazioni -->
-                <div style="max-height: 400px; min-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 25px;">
-                    <table id="headTable" class="config-table" style="margin-top:0;"></table>
+            <!-- ===== FILE 1 SECTION ===== -->
+            <div id="file1Section" style="display:none">
+                <div class="file-section-hdr f1" id="file1Header" style="display:none">
+                    <span style="font-size:20px;">📄</span>
+                    <span style="font-weight:800;">File 1</span>
+                    <span style="font-size:12px; opacity:0.8;">Il file principale del report</span>
                 </div>
-                
-                <p class="config-instr">2. Deseleziona eventuali righe finali "sporche" (totali, note, ecc):</p>
-                <!-- FIX 1: Aumentata altezza box righe escluse -->
-                <div style="max-height: 300px; min-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
-                    <table id="tailTable" class="config-table" style="margin-top:0;"></table>
+                <div class="file-drop-zone" id="dropZone">
+                    <input id="file" type="file" accept=".csv,text/csv">
+                    <div style="font-size: 48px; margin-bottom: 15px;">📄</div>
+                    <div class="file-msg" style="font-weight: 700; color: #334155; font-size: 18px;">Trascina qui il file CSV</div>
+                    <div style="font-size: 13px; color: #94a3b8; margin-top: 5px;">oppure clicca per selezionare dal computer</div>
+                </div>
+
+                <div id="csvConfigSection" style="display: none; margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
+                    <h3 style="color: var(--primary-dark); margin: 0 0 20px 0; font-size: 16px;">⚙️ Configurazione Intestazioni</h3>
+                    
+                    <p class="config-instr">1. Seleziona le righe dei nomi colonna:</p>
+                    <div style="max-height: 400px; min-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 25px;">
+                        <table id="headTable" class="config-table" style="margin-top:0;"></table>
+                    </div>
+                    
+                    <p class="config-instr">2. Deseleziona eventuali righe finali "sporche" (totali, note, ecc):</p>
+                    <div style="max-height: 300px; min-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+                        <table id="tailTable" class="config-table" style="margin-top:0;"></table>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="resetFileBtn" class="secondary" onclick="location.reload()">🔄 Ricomincia</button>
+                        <button id="confirmConfigBtn">Conferma Dati ➔</button>
+                    </div>
+                </div>
+
+                <!-- EXPLICIT DATA CONFIRMATION BOX -->
+                <div id="dataConfirmationBox" class="data-confirm-box">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #bbf7d0; padding-bottom:10px; margin-bottom:15px;">
+                        <h3 style="margin:0; font-size:18px;">✅ File 1 Pronto</h3>
+                        <div style="font-size:13px; background:white; padding:4px 10px; border-radius:15px; border:1px solid #bbf7d0;">
+                            <span id="confFileName" style="font-weight:bold;"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="data-confirm-grid">
+                        <div class="data-stat"><b id="statRows">0</b><span>Righe Incluse</span></div>
+                        <div class="data-stat"><b id="statCols">0</b><span>Colonne</span></div>
+                        <div class="data-stat"><b id="statHead">0</b><span>Righe Intest.</span></div>
+                        <div class="data-stat"><b id="statExcl">0</b><span>Righe Escluse</span></div>
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <p style="font-size:12px; font-weight:700; color:#15803d; margin-bottom:5px;">ANTEPRIMA DATI PULITI (Prime 3 righe):</p>
+                        <div style="background:white; border:1px solid #bbf7d0; border-radius:6px; padding:10px; font-size:11px; overflow-x:auto;">
+                            <table id="miniPreviewTable" class="preview" style="width:100%; margin:0;"></table>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="secondary" onclick="location.reload()">🔄 Annulla</button>
+                        <button id="openNormBtn" class="secondary" style="background:#fefce8; border-color:#fde68a; color:#92400e;">🧹 Normalizza Testo</button>
+                        <button id="proceedFromFile1Btn" onclick="app.proceedFromFile1()">Procedi ➔</button>
+                    </div>
+                </div><!-- close dataConfirmationBox -->
+            </div><!-- close file1Section -->
+
+            <!-- ===== FILE 2 SECTION ===== -->
+            <div id="file2Section" style="display:none; margin-top:25px; border-top:2px dashed var(--border); padding-top:25px;">
+                <div class="file-section-hdr f2">
+                    <span style="font-size:20px;">📄</span>
+                    <span style="font-weight:800;">File 2</span>
+                    <span style="font-size:12px; opacity:0.8;">Il file secondario da unire</span>
+                </div>
+
+                <div class="file-drop-zone" id="dropZone2">
+                    <input id="file2" type="file" accept=".csv,text/csv">
+                    <div style="font-size: 48px; margin-bottom: 15px;">📄</div>
+                    <div class="file-msg2" style="font-weight: 700; color: #334155; font-size: 18px;">Trascina qui il secondo file CSV</div>
+                    <div style="font-size: 13px; color: #94a3b8; margin-top: 5px;">oppure clicca per selezionare dal computer</div>
+                </div>
+
+                <div id="csvConfigSection2" style="display: none; margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
+                    <h3 style="color: #5b21b6; margin: 0 0 20px 0; font-size: 16px;">⚙️ Configurazione Intestazioni — File 2</h3>
+                    <p class="config-instr">1. Seleziona le righe dei nomi colonna:</p>
+                    <div style="max-height: 300px; min-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 25px;">
+                        <table id="headTable2" class="config-table" style="margin-top:0;"></table>
+                    </div>
+                    <p class="config-instr">2. Deseleziona eventuali righe finali "sporche":</p>
+                    <div style="max-height: 220px; min-height: 100px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+                        <table id="tailTable2" class="config-table" style="margin-top:0;"></table>
+                    </div>
+                    <div class="btn-group">
+                        <button id="confirmConfig2Btn" style="background:#5b21b6;">Conferma File 2 ➔</button>
+                    </div>
+                </div>
+
+                <div id="dataConfirmationBox2" class="data-confirm-box" style="background:#f5f3ff; border-color:#ddd6fe;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd6fe; padding-bottom:10px; margin-bottom:15px;">
+                        <h3 style="margin:0; font-size:18px; color:#5b21b6;">✅ File 2 Pronto</h3>
+                        <div style="font-size:13px; background:white; padding:4px 10px; border-radius:15px; border:1px solid #ddd6fe;">
+                            <span id="confFileName2" style="font-weight:bold;"></span>
+                        </div>
+                    </div>
+                    <div class="data-confirm-grid">
+                        <div class="data-stat"><b id="statRows2">0</b><span>Righe Incluse</span></div>
+                        <div class="data-stat"><b id="statCols2">0</b><span>Colonne</span></div>
+                    </div>
+                    <div style="margin-top:15px;">
+                        <p style="font-size:12px; font-weight:700; color:#5b21b6; margin-bottom:5px;">ANTEPRIMA (Prime 3 righe):</p>
+                        <div style="background:white; border:1px solid #ddd6fe; border-radius:6px; padding:10px; font-size:11px; overflow-x:auto;">
+                            <table id="miniPreviewTable2" class="preview" style="width:100%; margin:0;"></table>
+                        </div>
+                    </div>
+                    <div class="btn-group" style="margin-top:15px;">
+                        <button id="openNormBtn2" class="secondary" style="background:#fefce8; border-color:#fde68a; color:#92400e;">🧹 Normalizza Testo</button>
+                        <button id="openJoinConfigBtn" style="background:#5b21b6;">Configura Unione ➔</button>
+                    </div>
+                </div>
+            </div><!-- close file2Section -->
+
+            <!-- ===== JOIN CONFIG SECTION ===== -->
+            <div id="joinConfigSection" style="display:none; margin-top:25px; border-top:2px dashed var(--border); padding-top:25px;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+                    <span style="font-size:24px;">🔗</span>
+                    <div>
+                        <h3 style="margin:0; font-size:16px; font-weight:800; color:#0f766e;">Configura Unione (JOIN)</h3>
+                        <p style="margin:4px 0 0 0; font-size:13px; color:#64748b;">Seleziona una o più colonne comuni per unire i due file. Più colonne = chiave composita.</p>
+                    </div>
+                </div>
+
+                <!-- Join key pairs -->
+                <div id="joinKeysList"></div>
+                <button id="addJoinKeyBtn" class="secondary" style="font-size:12px; padding:6px 14px; margin-bottom:18px;">＋ Aggiungi colonna di join</button>
+
+                <!-- Cardinality + stats -->
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:18px; flex-wrap:wrap;">
+                    <div>
+                        <span style="font-size:12px; font-weight:700; color:#475569; margin-right:8px;">CARDINALITÀ:</span>
+                        <span id="cardinalityBadge" class="cardinality-badge card-none">— seleziona colonne</span>
+                    </div>
+                    <div id="joinStatBox" class="join-stats" style="display:none">
+                        <span class="join-stat-item">Corrispondenze: <b id="joinMatchCount">—</b></span>
+                        <span class="join-stat-item">Righe F1 senza match: <b id="joinOrphanCount">—</b></span>
+                        <span class="join-stat-item">Righe risultanti (LEFT): <b id="joinResultCount">—</b></span>
+                    </div>
+                </div>
+
+                <!-- Join type -->
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:22px; background:#f8fafc; padding:12px 16px; border-radius:8px; border:1px solid var(--border); flex-wrap:wrap;">
+                    <span style="font-size:13px; font-weight:700; color:#475569;">TIPO DI JOIN:</span>
+                    <label style="display:flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+                        <input type="radio" name="joinType" id="joinLeft" value="left" checked style="accent-color:var(--primary);"> 
+                        <b>LEFT JOIN</b> <span style="color:#64748b; font-size:12px;">(mantieni tutte le righe del File 1, anche senza corrispondenza)</span>
+                    </label>
+                    <label style="display:flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+                        <input type="radio" name="joinType" id="joinInner" value="inner" style="accent-color:var(--primary);"> 
+                        <b>INNER JOIN</b> <span style="color:#64748b; font-size:12px;">(mantieni solo le righe con corrispondenza in entrambi i file)</span>
+                    </label>
+                </div>
+
+                <!-- Conflict notice (shown if needed) -->
+                <div id="joinConflictNotice" style="display:none; background:#fffbeb; border:1px solid #fcd34d; border-radius:8px; padding:12px 16px; margin-bottom:18px; font-size:13px; color:#b45309;">
+                    ⚠️ <b>Colonne con lo stesso nome</b> nei due file verranno rinominate automaticamente aggiungendo il nome del file di provenienza.
+                    <div id="joinConflictDetail" style="margin-top:6px; font-size:12px;"></div>
+                </div>
+
+                <!-- N:M warning + confirmation -->
+                <div id="nmWarningBox" style="display:none; background:#fff7ed; border:1px solid #fdba74; border-radius:8px; padding:14px 18px; margin-bottom:16px; font-size:13px; color:#9a3412;">
+                    <div style="font-weight:800; margin-bottom:8px;">⚠️ Cardinalità N:M rilevata — righe duplicate possibili</div>
+                    <div style="margin-bottom:10px; line-height:1.6;">
+                        Sia File 1 che File 2 hanno valori ripetuti per le colonne di join selezionate. 
+                        Il join produrrà <b id="nmResultEstimate">—</b> righe, combinando ogni riga di F1 con tutte le righe corrispondenti di F2.<br>
+                        <span style="color:#b45309;">Questo è corretto se vuoi vedere tutte le combinazioni (es. più voci di costo × più liquidazioni). 
+                        Potrebbe essere indesiderato se te lo aspettavi come 1:N o 1:1.</span>
+                    </div>
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:700;">
+                        <input type="checkbox" id="nmConfirmChk" style="width:16px; height:16px; accent-color:#ea580c;">
+                        Confermo — voglio procedere con il join N:M
+                    </label>
                 </div>
 
                 <div class="btn-group">
-                    <button id="resetFileBtn" class="secondary" onclick="location.reload()">🔄 Carica Nuovo File</button>
-                    <button id="confirmConfigBtn">Conferma Dati ➔</button>
+                    <button id="executeJoinBtn" style="background:#0f766e;" disabled>🔗 Esegui Unione e Procedi ➔</button>
                 </div>
-            </div>
+            </div><!-- close joinConfigSection -->
 
-            <!-- EXPLICIT DATA CONFIRMATION BOX -->
-            <div id="dataConfirmationBox" class="data-confirm-box">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #bbf7d0; padding-bottom:10px; margin-bottom:15px;">
-                    <h3 style="margin:0; font-size:18px;">✅ Dati Pronti e Verificati</h3>
-                    <div style="font-size:13px; background:white; padding:4px 10px; border-radius:15px; border:1px solid #bbf7d0;">
-                        <span id="confFileName" style="font-weight:bold;"></span>
-                    </div>
-                </div>
-                
-                <div class="data-confirm-grid">
-                    <div class="data-stat"><b id="statRows">0</b><span>Righe Incluse</span></div>
-                    <div class="data-stat"><b id="statCols">0</b><span>Colonne</span></div>
-                    <div class="data-stat"><b id="statHead">0</b><span>Righe Intest.</span></div>
-                    <div class="data-stat"><b id="statExcl">0</b><span>Righe Escluse</span></div>
-                </div>
-
-                <div style="margin-top:20px;">
-                    <p style="font-size:12px; font-weight:700; color:#15803d; margin-bottom:5px;">ANTEPRIMA DATI PULITI (Prime 3 righe):</p>
-                    <div style="background:white; border:1px solid #bbf7d0; border-radius:6px; padding:10px; font-size:11px; overflow-x:auto;">
-                         <table id="miniPreviewTable" class="preview" style="width:100%; margin:0;"></table>
-                    </div>
-                </div>
-
-                <div class="btn-group">
-                    <button class="secondary" onclick="location.reload()">🔄 Annulla</button>
-                    <button id="openNormBtn" class="secondary" style="background:#fefce8; border-color:#fde68a; color:#92400e;">🧹 Normalizza Testo</button>
-                    <button onclick="app.goToStep(2)">Procedi alla Costruzione ➔</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
+        </div><!-- close accordion-body -->
+    </div><!-- close step1-card -->
 
     <!-- STEP 2: COSTRUZIONE & ANTEPRIMA -->
     <div id="step2-card" class="accordion-card collapsed">
@@ -494,7 +674,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
             <div class="btn-group">
                 <button class="secondary" onclick="app.goToStep(1)">⬅ Indietro</button>
@@ -583,93 +762,162 @@
       <h2>📖 Guida all'uso - Generatore Report</h2>
       <span class="close-btn">&times;</span>
     </div>
-    <!-- FIX 4: Aggiornato testo Guida Completa -->
     <div class="modal-body">
 
-      <h3>1. Importazione e Pulizia Dati</h3>
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>1. Un file o due? — La scelta iniziale</h3>
+      <p>All'avvio l'app chiede come vuoi lavorare:</p>
       <ul>
-        <li>Trascina il tuo file <b>.CSV</b> nell'area apposita oppure clicca per selezionarlo dal computer.</li>
-        <li>Seleziona le righe che contengono le <b>intestazioni</b> (nomi colonna) usando le checkbox nella tabella superiore. Puoi selezionare più righe se le intestazioni sono su più livelli — verranno unite automaticamente.</li>
-        <li>Nella tabella inferiore, <b>deseleziona</b> eventuali righe finali inutili (totali precalcolati, note, righe vuote di coda).</li>
-        <li>Clicca <b>Conferma Dati</b> e verifica nel box verde il numero di righe e colonne rilevate. Le prime 3 righe vengono mostrate come anteprima.</li>
+        <li><b>📄 Un file CSV</b> — il flusso classico: carichi un singolo file e costruisci il report. Vai direttamente al punto 2.</li>
+        <li><b>📄📄 Due file CSV</b> — carica due file separati, li unisci su una o più colonne comuni e costruisci il report usando campi da entrambi. Segui i punti 2, 3 e 4 prima di passare alla costruzione.</li>
       </ul>
 
-      <h3>2. Normalizzazione Testo 🧹</h3>
-      <p>Prima di costruire il report, puoi pulire i valori testuali del CSV direttamente in memoria cliccando il bottone <b style="background:#fefce8;padding:1px 6px;border-radius:4px;color:#92400e;border:1px solid #fde68a;">🧹 Normalizza Testo</b> nel box di conferma dati.</p>
-      <p>Il pannello mostra una riga per ogni colonna con:</p>
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>2. Importazione e Pulizia Dati</h3>
+      <p>Lo stesso procedimento si ripete per ogni file caricato (File 1 e, se scegli due file, File 2).</p>
       <ul>
-        <li><b>Tipo rilevato automaticamente:</b> <span class="tag" style="background:#dbeafe;color:#1d4ed8;">Testo</span>, <span class="tag" style="background:#fef3c7;color:#92400e;">Numerico</span> o <span class="tag" style="background:#f3e8ff;color:#6d28d9;">Misto</span>. Le colonne numeriche mostrano solo le opzioni compatibili.</li>
-        <li><b>Anteprima in tempo reale:</b> mentre spunti le opzioni, vedi subito il valore originale → trasformato (in verde se cambia).</li>
+        <li>Trascina il file <b>.CSV</b> nell'area apposita oppure clicca per selezionarlo dal computer.</li>
+        <li>Nella <b>tabella superiore</b> seleziona le righe che contengono le intestazioni (nomi colonna) spuntando le checkbox. Puoi selezionarne più di una se le intestazioni sono su più livelli — verranno unite automaticamente in un unico nome.</li>
+        <li>Nella <b>tabella inferiore</b> deseleziona eventuali righe finali inutili (totali precalcolati, note, righe vuote di coda).</li>
+        <li>Clicca <b>Conferma Dati</b> e verifica nel box riepilogativo il numero di righe e colonne rilevate. Le prime 3 righe vengono mostrate come anteprima.</li>
+        <li>Se lavori con un solo file, il bottone <b>Procedi ➔</b> ti porta direttamente alla costruzione del report. Se lavori con due file, il bottone rivela la sezione per caricare il File 2.</li>
       </ul>
-      <p>Le operazioni disponibili sono:</p>
-      <ul>
-        <li><span class="tag">✂️ Trim</span> <b>Rimuovi spazi agli estremi:</b> elimina spazi e tabulazioni prima e dopo il testo. Es. <span class="highlight">" Mario Rossi "</span> → <span class="highlight">"Mario Rossi"</span>.</li>
-        <li><span class="tag">⎵ Spazi doppi</span> <b>Rimuovi spazi interni multipli:</b> riduce sequenze di spazi a uno solo. Es. <span class="highlight">"Mario&nbsp;&nbsp;&nbsp;Rossi"</span> → <span class="highlight">"Mario Rossi"</span>. Diverso dal Trim, agisce all'interno della stringa.</li>
-        <li><span class="tag">🔠 Maiuscolo</span> Converte tutto il testo in MAIUSCOLO.</li>
-        <li><span class="tag">🔡 Minuscolo</span> Converte tutto il testo in minuscolo.</li>
-        <li><span class="tag">🔤 Prima Lettera</span> Prima lettera di ogni parola in maiuscolo, il resto minuscolo. Es. <span class="highlight">"MARIO rossi"</span> → <span class="highlight">"Mario Rossi"</span>. Le tre opzioni di capitalizzazione si escludono automaticamente a vicenda.</li>
-        <li><span class="tag">✔ Sì/No</span> <b>Normalizza valori booleani:</b> standardizza tutte le varianti dello stesso concetto. I valori <span class="highlight">si, sì, yes, 1, true, vero, x</span> diventano <b>Sì</b>; i valori <span class="highlight">no, 0, false, falso</span> diventano <b>No</b>. Utile quando lo stesso campo è stato compilato in modi diversi da utenti diversi.</li>
-        <li><span class="tag">🗑 Rimuovi punct</span> <b>Rimuovi punteggiatura:</b> elimina i caratteri <span class="highlight">. , ; : ! ? " ' ( ) [ ] { } - _ / \</span>. Utile per uniformare codici articolo o categorie che contengono separatori inconsistenti.</li>
-      </ul>
-      <p>La barra <b>"Applica a tutte"</b> in cima al pannello permette di spuntare una singola operazione su tutte le colonne in un click. Il bottone <span style="background:#fee2e2;color:#991b1b;padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">✖ Deseleziona</span> azzera tutte le selezioni. Clicca <b>Applica Normalizzazione</b> per confermare — al termine un messaggio mostra quanti valori sono stati modificati e in quali colonne.</p>
 
-      <h3>3. Costruzione Report</h3>
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>3. Normalizzazione Testo 🧹</h3>
+      <p>Prima di proseguire puoi pulire i valori del CSV in memoria cliccando <b style="background:#fefce8;padding:1px 6px;border-radius:4px;color:#92400e;border:1px solid #fde68a;">🧹 Normalizza Testo</b> nel box di conferma. Quando lavori con due file il bottone è disponibile separatamente per ciascuno. Il pannello mostra una riga per ogni colonna con il tipo rilevato automaticamente (<span class="tag" style="background:#dbeafe;color:#1d4ed8;">Testo</span>, <span class="tag" style="background:#fef3c7;color:#92400e;">Numerico</span> o <span class="tag" style="background:#f3e8ff;color:#6d28d9;">Misto</span>) e un'anteprima in tempo reale della trasformazione.</p>
+      <p>Operazioni disponibili:</p>
       <ul>
-        <li><b style="color:var(--col-rows)">☰ RIGHE (Gerarchia):</b> Trascina qui i campi per raggruppare i dati in modo gerarchico. L'ordine conta: il primo campo è il livello più alto (es. Regione → Agente → Prodotto).</li>
+        <li><span class="tag">✂️ Trim</span> Rimuove spazi e tabulazioni prima e dopo il testo. Es. <span class="highlight">" Mario Rossi "</span> → <span class="highlight">"Mario Rossi"</span>.</li>
+        <li><span class="tag">⎵ Spazi doppi</span> Riduce sequenze di spazi interni a uno solo. Es. <span class="highlight">"Mario&nbsp;&nbsp;&nbsp;Rossi"</span> → <span class="highlight">"Mario Rossi"</span>.</li>
+        <li><span class="tag">🔠 Maiuscolo / 🔡 Minuscolo / 🔤 Prima Lettera</span> Conversioni di capitalizzazione, mutuamente esclusive.</li>
+        <li><span class="tag">✔ Sì/No</span> Standardizza valori booleani: <span class="highlight">si, yes, 1, true, x</span> → <b>Sì</b>; <span class="highlight">no, 0, false</span> → <b>No</b>.</li>
+        <li><span class="tag">🗑 Rimuovi punct</span> Elimina punteggiatura (<span class="highlight">. , ; : ! ? " ' ( ) [ ] { } - _ / \</span>). Utile per uniformare codici con separatori inconsistenti.</li>
+      </ul>
+      <p>La barra <b>"Applica a tutte"</b> in cima spunta un'operazione su tutte le colonne in un click. Clicca <b>Applica Normalizzazione</b> per confermare — un messaggio mostra quanti valori sono stati modificati.</p>
+      <p style="background:#fffbeb;border:1px solid #fcd34d;border-radius:6px;padding:10px 14px;font-size:13px;color:#92400e;">
+        ⚠️ <b>Consiglio quando usi due file:</b> se la colonna comune (usata per unire i file) ha valori con formati diversi — es. <span class="highlight">"1463"</span> in un file e <span class="highlight">" 1463 "</span> con spazi nell'altro — il join non troverà corrispondenze. Usa Trim su entrambi i file <i>prima</i> di configurare l'unione.
+      </p>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>4. Configurazione Unione (JOIN) — Solo con due file</h3>
+      <p>Dopo aver confermato entrambi i file, clicca <b>Configura Unione ➔</b>. Questa sezione permette di definire come i due file vengono collegati tra loro.</p>
+
+      <h4 style="color:#0f766e;margin:18px 0 8px 0;">4a. Colonne di join — chiave semplice o composita</h4>
+      <p>L'app analizza automaticamente le intestazioni dei due file e suggerisce le colonne con nome uguale o simile come candidati per il join. Puoi modificarle liberamente.</p>
+      <ul>
+        <li>Ogni riga nella sezione join rappresenta una coppia: <b style="color:#3b82f6;">colonna del File 1</b> = <b style="color:#8b5cf6;">colonna del File 2</b>.</li>
+        <li>Puoi usare <b>più coppie contemporaneamente</b> (chiave composita): il join avviene sulla condizione che <i>tutte</i> le coppie corrispondano. I due campi restano separati nel report e sono selezionabili indipendentemente.</li>
+        <li>Aggiungi coppie con il bottone <b>＋ Aggiungi colonna di join</b>; rimuovile con il tasto ✕ a fianco.</li>
+      </ul>
+      <p><b>Esempio:</b> se File 1 ha <i>CDC</i> e <i>Impegno</i> e File 2 ha le stesse colonne, impostare due coppie (CDC=CDC e Impegno=Impegno) garantisce che due impegni con lo stesso codice ma centri di costo diversi non vengano mai mescolati.</p>
+
+      <h4 style="color:#0f766e;margin:18px 0 8px 0;">4b. Cardinalità — cosa significa e perché conta</h4>
+      <p>La <b>cardinalità</b> descrive il rapporto numerico tra le righe dei due file rispetto alla chiave scelta. L'app la calcola in tempo reale e la mostra con un badge colorato.</p>
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;margin:12px 0;font-size:14px;">
+        <div style="margin-bottom:14px;">
+          <span class="cardinality-badge card-1-1" style="font-size:12px;padding:3px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:5px;">✅ 1:1</span>
+          <span style="margin-left:10px;"><b>Perfetto.</b> Ogni riga del File 1 ha al massimo una corrispondenza nel File 2 e viceversa. Il risultato è pulito e prevedibile — il numero di righe non cambia rispetto al File 1. <i>Esempio tipico: due anagrafiche con lo stesso codice univoco.</i></span>
+        </div>
+        <div style="margin-bottom:14px;">
+          <span class="cardinality-badge card-1-n" style="font-size:12px;padding:3px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:5px;">🟡 1:N</span>
+          <span style="margin-left:10px;"><b>Normale e spesso voluto.</b> Ogni riga del File 1 corrisponde a <i>più</i> righe del File 2. Il risultato ha più righe del File 1 originale: ogni "master" viene ripetuto tante volte quante sono le sue righe di dettaglio. <i>Esempio tipico: un cliente (F1) con più ordini (F2), un impegno (F1) con più atti di liquidazione (F2).</i> Questo è corretto se vuoi vedere il dettaglio di ogni collegamento.</span>
+        </div>
+        <div style="margin-bottom:4px;">
+          <span class="cardinality-badge card-n-m" style="font-size:12px;padding:3px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:5px;">🔴 N:M</span>
+          <span style="margin-left:10px;"><b>Attenzione — quasi sempre un problema.</b> Sia il File 1 che il File 2 hanno valori ripetuti per le colonne di join scelte. Il join produce una combinazione <i>moltiplicativa</i>: ogni riga di F1 viene abbinata a <i>tutte</i> le righe corrispondenti di F2, e viceversa. Il risultato può avere molte più righe del previsto e, soprattutto, <b>i valori numerici risultano duplicati e gonfiati</b>.</span>
+        </div>
+        <div style="background:#fff7ed;border:1px solid #fdba74;border-radius:8px;padding:12px 14px;margin-top:10px;font-size:13px;color:#9a3412;">
+          <b>Esempio concreto di N:M problematico:</b> File 1 ha due righe per l'impegno 3260001 (due voci di capitolo: 10.000 e 20.000). File 2 ha tre liquidazioni per lo stesso impegno (DD/201 5.000, DD/202 3.000, DD/203 2.000). Il join su impegno produce 2×3=6 righe: ogni liquidazione compare <b>due volte</b>, e se fai la somma delle liquidazioni ottieni 20.000 invece di 10.000. I dati appaiono corretti ma sono gonfiati del doppio.
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 14px;margin-top:10px;font-size:13px;color:#15803d;">
+          <b>Quando N:M può essere accettabile:</b> se hai bisogno di vedere <i>tutte le combinazioni</i> tra le righe dei due file senza aggregare valori numerici — ad esempio un report puramente testuale che elenca tutte le coppie (voce di costo × determina) senza fare somme — il N:M è inoffensivo. In questo caso spunta la casella di conferma che appare nell'avviso arancione e procedi.
+        </div>
+        <div style="margin-top:12px;font-size:13px;color:#475569;"><b>Come ridurre o eliminare un N:M:</b> aggiungi altre colonne alla chiave composita. Se oltre a CDC e Impegno esiste un'altra colonna che distingue le righe (es. Voce di Costo, Anno, Capitolo), aggiungila come terza coppia di join — spesso la cardinalità scende a 1:N o 1:1.</div>
+      </div>
+
+      <h4 style="color:#0f766e;margin:18px 0 8px 0;">4c. Tipo di JOIN</h4>
+      <ul>
+        <li><b>LEFT JOIN (predefinito):</b> tutte le righe del File 1 compaiono nel risultato, anche se non hanno corrispondenza nel File 2. I campi di F2 risulteranno vuoti per quelle righe. Usa questa opzione quando vuoi vedere anche i record "orfani" del File 1.</li>
+        <li><b>INNER JOIN:</b> solo le righe che hanno corrispondenza in entrambi i file. Le righe di F1 senza match vengono scartate. Usa questa opzione quando ti interessano solo i dati completi e non vuoi righe con campi vuoti.</li>
+      </ul>
+
+      <h4 style="color:#0f766e;margin:18px 0 8px 0;">4d. Conflitti di nome colonna</h4>
+      <p>Se entrambi i file contengono una colonna con lo stesso nome (diversa da quelle usate come chiave di join), l'app la rinomina automaticamente aggiungendo il nome del File 2 tra parentesi quadre. Ad esempio se entrambi i file hanno una colonna <span class="highlight">importo</span>, quella di F2 diventa <span class="highlight">importo [nome_file2]</span>. Un avviso giallo segnala le colonne rinominate prima di procedere.</p>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>5. Lista dei Campi con Badge F1 / F2 / 🔗</h3>
+      <p>Dopo l'unione, la lista dei campi disponibili mostra tutti i campi di entrambi i file in un unico elenco. Ogni campo porta un piccolo badge colorato che ne indica l'origine:</p>
+      <ul>
+        <li><span class="field-badge badge-f1" style="font-size:11px;padding:2px 7px;border-radius:4px;background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe;">F1</span> — il campo proviene dal File 1.</li>
+        <li><span class="field-badge badge-f2" style="font-size:11px;padding:2px 7px;border-radius:4px;background:#ede9fe;color:#5b21b6;border:1px solid #ddd6fe;">F2</span> — il campo proviene dal File 2.</li>
+        <li><span class="field-badge badge-join" style="font-size:11px;padding:2px 7px;border-radius:4px;background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;">🔗</span> — il campo è stato usato come chiave di join (proviene da F1 ma rappresenta la corrispondenza tra i due file).</li>
+      </ul>
+      <p>I badge sono puramente informativi: tutti i campi si usano allo stesso modo, trascinandoli nelle aree RIGHE, COLONNE e VALORI.</p>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>6. Costruzione Report</h3>
+      <ul>
+        <li><b style="color:var(--col-rows)">☰ RIGHE (Gerarchia):</b> Trascina qui i campi per raggruppare i dati in modo gerarchico. L'ordine conta: il primo campo è il livello più alto (es. CDC → Impegno → Determina).</li>
         <li><b style="color:var(--col-cols)">⬌ COLONNE (Opzionale):</b> Trascina qui un campo per "pivotare" i dati in orizzontale, creando una colonna per ogni valore distinto (es. Mesi, Anni, Categorie).</li>
-        <li><b style="color:var(--col-vals)">∑ VALORI (Dati):</b> Trascina qui i campi numerici da aggregare (es. Fatturato, Quantità). Puoi scegliere la funzione: <b>sum</b> (somma), <b>count</b> (conteggio), <b>avg</b> (media), <b>min</b>, <b>max</b>.</li>
+        <li><b style="color:var(--col-vals)">∑ VALORI (Dati):</b> Trascina qui i campi numerici da aggregare. Puoi scegliere la funzione: <b>sum</b> (somma), <b>count</b> (conteggio), <b>avg</b> (media), <b>min</b>, <b>max</b>.</li>
         <li>Usa la <b>barra di ricerca</b> nella lista Disponibili per trovare rapidamente un campo.</li>
-        <li>Il bottone <b>🔗 Unisci</b> permette di combinare più campi testuali in uno solo selezionando le checkbox nella lista Disponibili (es. unire "Nome" e "Cognome").</li>
+        <li>Il bottone <b>🔗 Unisci</b> permette di combinare più campi testuali in uno solo selezionando le checkbox (es. unire "Nome" e "Cognome").</li>
         <li>Il bottone <b>🧹 Svuota</b> rimuove tutti i campi dalle tre aree, riportando tutto alla lista Disponibili.</li>
       </ul>
 
-      <h3>4. Opzioni Campi (I Flag)</h3>
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>7. Opzioni Campi (I Flag)</h3>
       <p>Ogni campo trascinato in <b>RIGHE</b> mostra una serie di controlli:</p>
       <ul>
-        <li><span class="tag">A-Z / Z-A</span> <b>Ordinamento:</b> ordine alfabetico crescente o decrescente per quel livello di raggruppamento.</li>
-        <li><span class="tag">V</span> <b>Vuoto se duplicato:</b> nasconde il testo della cella quando il valore è lo stesso della riga precedente, rendendo il report più leggibile.</li>
-        <li><span class="tag">E</span> <b>Espandi:</b> se attivo mostra tutte le righe di dettaglio; se disattivo mostra una sola riga di sintesi per gruppo (con i valori aggregati). Sugli ultimi livelli è modificabile, sui livelli intermedi è sempre attivo.</li>
-        <li><span class="tag">S</span> <b>Subtotale:</b> aggiunge una riga di totale parziale alla fine di ogni gruppo (compare solo se il gruppo ha più di una voce).</li>
-        <li><span class="tag">C</span> <b>Compatta:</b> mette il campo nella stessa colonna del livello superiore invece di usarne una dedicata. Non disponibile sul primo livello.</li>
-        <li><span class="tag">B</span> <b>Grassetto:</b> visualizza i valori di quel livello in grassetto nel report.</li>
+        <li><span class="tag">A-Z / Z-A</span> <b>Ordinamento</b> crescente o decrescente per quel livello.</li>
+        <li><span class="tag">V</span> <b>Vuoto se duplicato:</b> nasconde il testo quando il valore è uguale alla riga precedente, rendendo il report più leggibile.</li>
+        <li><span class="tag">E</span> <b>Espandi:</b> mostra tutte le righe di dettaglio; se disattivo mostra solo la riga di sintesi del gruppo.</li>
+        <li><span class="tag">S</span> <b>Subtotale:</b> aggiunge una riga di totale parziale alla fine di ogni gruppo.</li>
+        <li><span class="tag">C</span> <b>Compatta:</b> mette il campo nella stessa colonna del livello superiore. Non disponibile sul primo livello.</li>
+        <li><span class="tag">B</span> <b>Grassetto:</b> visualizza i valori in grassetto.</li>
       </ul>
-      <p>I campi in <b>VALORI</b> hanno il flag <span class="tag">%</span> che mostra il dato come percentuale sul totale colonna anziché come valore assoluto.</p>
+      <p>I campi in <b>VALORI</b> hanno il flag <span class="tag">%</span> che mostra il dato come percentuale sul totale colonna.</p>
 
-      <h3>5. Barra degli Strumenti (Anteprima)</h3>
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>8. Barra degli Strumenti (Anteprima)</h3>
       <ul>
-        <li><b>Colori / Box:</b> attiva o disattiva lo stile grafico del report. Il selettore colore accanto a "Colori" permette di scegliere il tema cromatico.</li>
-        <li><b>RIGA — Totale:</b> aggiunge una colonna finale con la somma di tutti i valori della riga.</li>
-        <li><b>RIGA — % Incidenza:</b> aggiunge una colonna con il peso percentuale di ogni riga sul totale generale. Attivando questa opzione, "Totale" viene abilitato automaticamente.</li>
-        <li><b>Tot. Gen.:</b> aggiunge la riga finale con il totale di tutto il report.</li>
+        <li><b>Colori / Box:</b> attiva o disattiva lo stile grafico e il tema cromatico.</li>
+        <li><b>RIGA — Totale:</b> aggiunge una colonna finale con la somma dei valori di riga.</li>
+        <li><b>RIGA — % Incidenza:</b> aggiunge il peso percentuale di ogni riga sul totale generale.</li>
+        <li><b>Tot. Gen.:</b> aggiunge la riga finale con il totale complessivo.</li>
         <li><b>Nascondi Vuote:</b> nasconde le colonne il cui totale è zero o vuoto.</li>
         <li><b>NUMERI — Dec:</b> imposta il numero di decimali (0–4).</li>
         <li><b>NUMERI — 1.000:</b> attiva il separatore delle migliaia.</li>
-        <li><b>NUMERI — €:</b> aggiunge il simbolo euro ai valori numerici.</li>
+        <li><b>NUMERI — €:</b> aggiunge il simbolo euro.</li>
       </ul>
 
-      <h3>6. Copia Tabella negli Appunti 📋</h3>
-      <p>Il bottone <b>📋 Copia Tabella</b> accanto al titolo "Anteprima Live" copia la tabella visualizzata negli appunti in due formati simultaneamente:</p>
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>9. Copia Tabella negli Appunti 📋</h3>
+      <p>Il bottone <b>📋 Copia Tabella</b> copia la tabella in due formati simultaneamente:</p>
       <ul>
-        <li><b>HTML formattato</b> → incollando in <b>Word</b> o <b>Outlook</b> mantiene colori, bordi e grassetti esattamente come nell'anteprima.</li>
-        <li><b>Testo tabulato (TSV)</b> → incollando in <b>Excel</b> o <b>Google Sheets</b> distribuisce automaticamente i dati nelle celle corrette.</li>
-      </ul>
-      <p>Il bottone si trasforma in "✅ Copiata!" per confermare l'operazione. Se il browser non supporta la clipboard avanzata, viene usato un metodo di fallback compatibile.</p>
-
-      <h3>7. Annulla / Ripeti (Undo/Redo)</h3>
-      <p>I pulsanti <b>↩</b> e <b>↪</b> nella barra degli strumenti (o i tasti <span class="tag">Ctrl+Z</span> / <span class="tag">Ctrl+Y</span>) permettono di annullare o ripetere le modifiche alla struttura del report: drag & drop dei campi, rimozioni, riordinamenti. Lo storico mantiene fino a 40 stati.</p>
-
-      <h3>8. Salva e Carica Modello</h3>
-      <ul>
-        <li><b>💾 Salva</b> (o <span class="tag">Ctrl+S</span>): salva la configurazione attuale (campi, flag, opzioni) in un file <b>.json</b> sul tuo computer.</li>
-        <li><b>📂 Carica:</b> ricarica una configurazione salvata in precedenza. Se il CSV caricato contiene gli stessi campi, il report viene ricostruito automaticamente, compresi gli eventuali campi uniti.</li>
+        <li><b>HTML formattato</b> → in <b>Word</b> o <b>Outlook</b> mantiene colori, bordi e grassetti.</li>
+        <li><b>Testo tabulato (TSV)</b> → in <b>Excel</b> o <b>Google Sheets</b> distribuisce i dati nelle celle corrette.</li>
       </ul>
 
-      <h3>9. Export Finale</h3>
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>10. Annulla / Ripeti (Undo/Redo)</h3>
+      <p>I pulsanti <b>↩</b> e <b>↪</b> (o <span class="tag">Ctrl+Z</span> / <span class="tag">Ctrl+Y</span>) annullano o ripetono le modifiche alla struttura del report. Lo storico mantiene fino a 40 stati.</p>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>11. Salva e Carica Modello</h3>
       <ul>
-        <li><b>📥 Scarica Excel:</b> genera un file <b>.xlsx</b> con intestazioni colorate, subtotali con formule SUBTOTAL (aggiornabili in Excel), formattazione numerica e larghezze colonne ottimizzate automaticamente.</li>
-        <li><b>📄 Scarica PDF:</b> genera un file <b>.pdf</b> in formato landscape con la stessa struttura del report. Ideale per stampa o invio.</li>
-        <li>Prima di scaricare puoi modificare il <b>nome del file</b> nel campo di testo apposito.</li>
-        <li>Usa <span class="tag">Ctrl+Invio</span> per passare rapidamente allo step successivo senza usare il mouse.</li>
+        <li><b>💾 Salva</b> (o <span class="tag">Ctrl+S</span>): salva la configurazione in un file <b>.json</b>.</li>
+        <li><b>📂 Carica:</b> ricarica una configurazione salvata. Se il CSV contiene gli stessi campi, il report viene ricostruito automaticamente.</li>
+      </ul>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <h3>12. Export Finale</h3>
+      <ul>
+        <li><b>📥 Scarica Excel:</b> genera un file <b>.xlsx</b> con intestazioni colorate, subtotali con formule SUBTOTAL, formattazione numerica e larghezze ottimizzate.</li>
+        <li><b>📄 Scarica PDF:</b> genera un <b>.pdf</b> in formato landscape. Ideale per stampa o invio.</li>
+        <li>Puoi modificare il <b>nome del file</b> prima di scaricare. Usa <span class="tag">Ctrl+Invio</span> per passare allo step successivo senza mouse.</li>
       </ul>
 
     </div>
@@ -683,6 +931,332 @@ const app = (() => {
     const nodes = ["available","rows","cols","values"].reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
     let currentStep = 1;
     let loadedFileName = "";
+
+    // ===== TWO-FILE STATE =====
+    let fileMode = 1;
+    let fullArray2 = [], rawData2 = [], headers2 = [];
+    let loadedFileName2 = "";
+    let joinKeys = []; // [{col1: headerInFile1, col2: headerInFile2}]
+    let joinType = 'left';
+    let fieldSources = {}; // fieldName -> 'F1'|'F2'|'JOIN'
+
+    // ===== MODE SELECTION =====
+    function selectMode(mode) {
+        fileMode = mode;
+        document.getElementById('modeSelector').style.display = 'none';
+        document.getElementById('file1Section').style.display = 'block';
+        if (mode === 2) {
+            document.getElementById('file1Header').style.display = 'flex';
+        }
+        document.getElementById('modeCard' + mode).classList.add('selected');
+    }
+
+    // ===== FILE 2 PARSING =====
+    document.getElementById("file2").onchange = (e) => {
+        const f = e.target.files[0]; if(!f) return;
+        loadedFileName2 = f.name;
+        document.querySelector('.file-msg2').innerText = "✅ " + f.name;
+        Papa.parse(f, { skipEmptyLines: true, complete: res => {
+            fullArray2 = res.data;
+            document.getElementById("csvConfigSection2").style.display = "block";
+            document.getElementById("dropZone2").style.display = "none";
+            const hT = document.getElementById("headTable2"), tT = document.getElementById("tailTable2");
+            hT.innerHTML = tT.innerHTML = "";
+            fullArray2.slice(0, 5).forEach((r, i) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td><input type="checkbox" class="h-chk2" value="${i}"></td>` + r.map(c => `<td>${c||''}</td>`).join("");
+                hT.appendChild(tr);
+            });
+            const start = Math.max(5, fullArray2.length - 5);
+            fullArray2.slice(start).forEach((r, i) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td><input type="checkbox" class="t-chk2" value="${start+i}" checked></td>` + r.map(c => `<td>${c||''}</td>`).join("");
+                tT.appendChild(tr);
+            });
+        }});
+    };
+
+    document.getElementById("confirmConfig2Btn").onclick = () => {
+        const hIdx = Array.from(document.querySelectorAll(".h-chk2:checked")).map(c => +c.value);
+        const tExcl = Array.from(document.querySelectorAll(".t-chk2:not(:checked)")).map(c => +c.value);
+        if(!hIdx.length) { showToast('Seleziona almeno una riga di intestazione.', 'warning'); return; }
+        headers2 = [];
+        const nCols = fullArray2[hIdx[0]].length;
+        for(let c=0; c<nCols; c++){
+            let parts = [];
+            hIdx.forEach(r => { let v = (fullArray2[r][c]||"").trim(); if(!v && c>0){ for(let p=c-1;p>=0;p--) if(fullArray2[r][p]){v=fullArray2[r][p];break;} } if(v && !parts.includes(v)) parts.push(v); });
+            headers2.push(parts.join(" ") || "Col " + c);
+        }
+        rawData2 = [];
+        const maxH = Math.max(...hIdx);
+        fullArray2.forEach((r, i) => { if(i>maxH && !hIdx.includes(i) && !tExcl.includes(i)){ let obj={}; headers2.forEach((h,idx)=>obj[h]=r[idx]); rawData2.push(obj); }});
+        if(!rawData2.length){ showToast('Nessuna riga dati trovata nel File 2.', 'error'); return; }
+
+        document.getElementById("csvConfigSection2").style.display = "none";
+        const box2 = document.getElementById("dataConfirmationBox2"); box2.style.display = "block";
+        document.getElementById("confFileName2").innerText = loadedFileName2;
+        document.getElementById("statRows2").innerText = rawData2.length.toLocaleString('it-IT');
+        document.getElementById("statCols2").innerText = headers2.length;
+
+        const mp2 = document.getElementById("miniPreviewTable2"); mp2.innerHTML = "";
+        const hr2 = document.createElement("tr"); headers2.forEach(h => hr2.innerHTML+=`<th>${h}</th>`); mp2.appendChild(hr2);
+        rawData2.slice(0,3).forEach(row => { const tr=document.createElement("tr"); headers2.forEach(h=>tr.innerHTML+=`<td>${row[h]||''}</td>`); mp2.appendChild(tr); });
+
+        showToast(`File 2: ${rawData2.length.toLocaleString('it-IT')} righe, ${headers2.length} colonne.`, 'success');
+    };
+
+    document.getElementById("openJoinConfigBtn").onclick = () => {
+        buildJoinConfig();
+        document.getElementById("joinConfigSection").style.display = "block";
+        document.getElementById("joinConfigSection").scrollIntoView({behavior:'smooth', block:'start'});
+    };
+
+    // ===== JOIN CONFIG BUILDER =====
+    function normalizeColName(name) {
+        return name.toLowerCase().replace(/[\s_\-\.\/\\]/g, '');
+    }
+    function colSimilarity(a, b) {
+        const na = normalizeColName(a), nb = normalizeColName(b);
+        if (na === nb) return 1.0;
+        if (na.includes(nb) || nb.includes(na)) return 0.7;
+        // simple common prefix ratio
+        let common = 0;
+        for(let i=0; i<Math.min(na.length,nb.length); i++) { if(na[i]===nb[i]) common++; else break; }
+        return common / Math.max(na.length, nb.length);
+    }
+
+    function findCandidatePairs() {
+        const pairs = [];
+        headers.forEach(h1 => {
+            headers2.forEach(h2 => {
+                const score = colSimilarity(h1, h2);
+                if (score >= 0.7) pairs.push({col1: h1, col2: h2, score});
+            });
+        });
+        pairs.sort((a,b) => b.score - a.score);
+        return pairs;
+    }
+
+    function buildJoinConfig() {
+        const pairs = findCandidatePairs();
+        joinKeys = [];
+        const list = document.getElementById("joinKeysList");
+        list.innerHTML = "";
+
+        // Add one row per candidate (or one empty row if no candidates)
+        const toAdd = pairs.length > 0 ? pairs.slice(0, Math.min(pairs.length, 3)) : [null];
+        toAdd.forEach(p => addJoinKeyRow(p ? p.col1 : null, p ? p.col2 : null));
+        updateCardinalityBadge();
+        updateConflictNotice();
+    }
+
+    function addJoinKeyRow(preCol1, preCol2) {
+        const list = document.getElementById("joinKeysList");
+        const row = document.createElement("div");
+        row.className = "join-pair-row";
+
+        const sel1 = document.createElement("select");
+        sel1.innerHTML = '<option value="">— Colonna File 1 —</option>' + headers.map(h => `<option value="${h.replace(/"/g,'&quot;')}"${h===preCol1?'selected':''}>${h}</option>`).join('');
+        sel1.style.borderLeft = '4px solid #3b82f6';
+
+        const arrow = document.createElement("span");
+        arrow.className = "join-pair-arrow"; arrow.textContent = "=";
+
+        const sel2 = document.createElement("select");
+        sel2.innerHTML = '<option value="">— Colonna File 2 —</option>' + headers2.map(h => `<option value="${h.replace(/"/g,'&quot;')}"${h===preCol2?'selected':''}>${h}</option>`).join('');
+        sel2.style.borderLeft = '4px solid #8b5cf6';
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "secondary danger";
+        removeBtn.style.cssText = "padding:4px 10px; font-size:13px; flex-shrink:0;";
+        removeBtn.innerHTML = "✕";
+        removeBtn.title = "Rimuovi";
+        removeBtn.onclick = () => { row.remove(); updateCardinalityBadge(); updateConflictNotice(); };
+
+        sel1.onchange = sel2.onchange = () => { updateCardinalityBadge(); updateConflictNotice(); };
+
+        row.appendChild(sel1); row.appendChild(arrow); row.appendChild(sel2); row.appendChild(removeBtn);
+        list.appendChild(row);
+        updateCardinalityBadge(); updateConflictNotice();
+    }
+
+    document.getElementById("addJoinKeyBtn").onclick = () => addJoinKeyRow(null, null);
+
+    function getCurrentJoinKeys() {
+        const rows = document.querySelectorAll("#joinKeysList .join-pair-row");
+        const keys = [];
+        rows.forEach(row => {
+            const sels = row.querySelectorAll("select");
+            const c1 = sels[0].value, c2 = sels[1].value;
+            if (c1 && c2) keys.push({col1: c1, col2: c2});
+        });
+        return keys;
+    }
+
+    function detectCardinality(keys) {
+        if (!keys.length || !rawData.length || !rawData2.length) return null;
+        const k1 = rawData.map(r => keys.map(jk => (r[jk.col1]||'').toString().trim().toLowerCase()).join('|||'));
+        const k2 = rawData2.map(r => keys.map(jk => (r[jk.col2]||'').toString().trim().toLowerCase()).join('|||'));
+        const u1 = new Set(k1).size === k1.length;
+        const u2 = new Set(k2).size === k2.length;
+        if (u1 && u2) return '1:1';
+        if (u1) return '1:N';
+        if (u2) return 'N:1';
+        return 'N:M';
+    }
+
+    function computeJoinStats(keys) {
+        if (!keys.length) return null;
+        const lookup = {};
+        rawData2.forEach(r => {
+            const k = keys.map(jk => (r[jk.col2]||'').toString().trim().toLowerCase()).join('|||');
+            lookup[k] = (lookup[k] || 0) + 1;
+        });
+        let matched = 0, orphan = 0, resultRows = 0;
+        rawData.forEach(r => {
+            const k = keys.map(jk => (r[jk.col1]||'').toString().trim().toLowerCase()).join('|||');
+            if (lookup[k]) { matched++; resultRows += lookup[k]; }
+            else { orphan++; resultRows++; } // left join keeps orphans
+        });
+        return { matched, orphan, resultRows };
+    }
+
+    function updateCardinalityBadge() {
+        const keys = getCurrentJoinKeys();
+        const badge = document.getElementById("cardinalityBadge");
+        const execBtn = document.getElementById("executeJoinBtn");
+        const statBox = document.getElementById("joinStatBox");
+        const nmBox = document.getElementById("nmWarningBox");
+        const nmChk = document.getElementById("nmConfirmChk");
+
+        if (!keys.length) {
+            badge.className = "cardinality-badge card-none";
+            badge.textContent = "— seleziona colonne";
+            execBtn.disabled = true;
+            statBox.style.display = 'none';
+            nmBox.style.display = 'none';
+            return;
+        }
+
+        const card = detectCardinality(keys);
+        const labels = {
+            '1:1': '✅ 1:1 — perfetto',
+            '1:N': '🟡 1:N — una riga di F1 = più righe di F2',
+            'N:1': '🟡 N:1 — più righe di F1 = una di F2',
+            'N:M': '🔴 N:M — righe duplicate in entrambi i file'
+        };
+        const classes = {'1:1':'card-1-1','1:N':'card-1-n','N:1':'card-n-1','N:M':'card-n-m'};
+        badge.className = "cardinality-badge " + (classes[card] || 'card-none');
+        badge.textContent = labels[card] || card;
+
+        const stats = computeJoinStats(keys);
+        if (stats) {
+            statBox.style.display = 'flex';
+            document.getElementById("joinMatchCount").textContent = stats.matched.toLocaleString('it-IT');
+            document.getElementById("joinOrphanCount").textContent = stats.orphan.toLocaleString('it-IT');
+            document.getElementById("joinResultCount").textContent = stats.resultRows.toLocaleString('it-IT');
+        }
+
+        if (card === 'N:M') {
+            nmBox.style.display = 'block';
+            if (stats) document.getElementById("nmResultEstimate").textContent = stats.resultRows.toLocaleString('it-IT') + ' righe stimate';
+            // Button enabled only when checkbox is ticked
+            execBtn.disabled = !nmChk.checked;
+            // Wire checkbox (idempotent)
+            nmChk.onchange = () => { execBtn.disabled = !nmChk.checked; };
+        } else {
+            nmBox.style.display = 'none';
+            nmChk.checked = false;
+            execBtn.disabled = false;
+        }
+    }
+
+    function updateConflictNotice() {
+        const keys = getCurrentJoinKeys();
+        const joinCols2 = keys.map(jk => jk.col2);
+        const conflicts = headers2.filter(h => !joinCols2.includes(h) && headers.includes(h));
+        const notice = document.getElementById("joinConflictNotice");
+        const detail = document.getElementById("joinConflictDetail");
+        if (conflicts.length > 0) {
+            notice.style.display = 'block';
+            const fn2 = loadedFileName2.replace(/\.[^.]+$/, '');
+            detail.innerHTML = conflicts.map(c => `"${c}" → rinominata in "<b>${c} [${fn2}]</b>"`).join('<br>');
+        } else {
+            notice.style.display = 'none';
+        }
+    }
+
+    // ===== EXECUTE JOIN =====
+    document.getElementById("executeJoinBtn").onclick = () => {
+        joinKeys = getCurrentJoinKeys();
+        joinType = document.querySelector('input[name="joinType"]:checked').value;
+        if (!joinKeys.length) { showToast('Seleziona almeno una colonna di join.', 'warning'); return; }
+
+        const card = detectCardinality(joinKeys);
+        // N:M allowed only with explicit checkbox confirmation (button already disabled without it)
+        if (card === 'N:M' && !document.getElementById("nmConfirmChk").checked) {
+            showToast('Spunta la casella di conferma per procedere con un join N:M.', 'warning'); return;
+        }
+
+        const fn2 = loadedFileName2.replace(/\.[^.]+$/, '');
+        const joinCols2 = joinKeys.map(jk => jk.col2);
+
+        // Build field source map and rename conflicts
+        fieldSources = {};
+        const renames = {}; // original col2 name -> name in merged dataset
+        headers.forEach(h => { fieldSources[h] = 'F1'; });
+        headers2.forEach(h => {
+            if (joinCols2.includes(h)) return;
+            if (headers.includes(h)) {
+                const newName = h + ' [' + fn2 + ']';
+                renames[h] = newName;
+                fieldSources[newName] = 'F2';
+            } else {
+                renames[h] = h;
+                fieldSources[h] = 'F2';
+            }
+        });
+        // Mark join columns
+        joinKeys.forEach(jk => { fieldSources[jk.col1] = 'JOIN'; });
+
+        // Build lookup from rawData2
+        const lookup = {};
+        rawData2.forEach(row2 => {
+            const key = joinKeys.map(jk => (row2[jk.col2]||'').toString().trim().toLowerCase()).join('|||');
+            if (!lookup[key]) lookup[key] = [];
+            lookup[key].push(row2);
+        });
+
+        // Perform join
+        const merged = [];
+        rawData.forEach(row1 => {
+            const key = joinKeys.map(jk => (row1[jk.col1]||'').toString().trim().toLowerCase()).join('|||');
+            const matches = lookup[key];
+            if (matches && matches.length > 0) {
+                matches.forEach(row2 => {
+                    const m = {...row1};
+                    Object.keys(renames).forEach(origCol => { m[renames[origCol]] = row2[origCol] || ''; });
+                    merged.push(m);
+                });
+            } else if (joinType === 'left') {
+                const m = {...row1};
+                Object.keys(renames).forEach(origCol => { m[renames[origCol]] = ''; });
+                merged.push(m);
+            }
+        });
+
+        // Replace rawData and headers
+        rawData = merged;
+        const extraHeaders = Object.values(renames);
+        headers = [...headers, ...extraHeaders];
+
+        showToast(`✅ Join completato: ${merged.length.toLocaleString('it-IT')} righe risultanti.`, 'success', 5000);
+        document.getElementById('status-step1').style.display = 'block';
+        renderAvailable();
+        updateAdvisor();
+        takeSnapshot();
+        goToStep(2);
+    };
 
     // ===== TOAST SYSTEM =====
     function showToast(msg, type = 'info', duration = 3500) {
@@ -766,10 +1340,24 @@ const app = (() => {
     // --- STEP NAVIGATION ---
     function goToStep(n) {
         if (n > 1 && rawData.length === 0) { showToast('Carica e conferma prima i dati!', 'warning'); return; }
+        if (n > 1 && fileMode === 2 && !document.getElementById('status-step1').style.display.includes('block')) {
+            showToast('Completa prima la configurazione del join.', 'warning'); return;
+        }
         if (n > 2 && !validateStructure()) { showToast('Definisci Righe e Valori prima di esportare!', 'warning'); return; }
         
         currentStep = n;
         updateUI();
+    }
+
+    function proceedFromFile1() {
+        if (fileMode === 1) {
+            document.getElementById('status-step1').style.display = 'block';
+            goToStep(2);
+        } else {
+            // Show file2 section
+            document.getElementById('file2Section').style.display = 'block';
+            document.getElementById('file2Section').scrollIntoView({behavior:'smooth', block:'start'});
+        }
     }
 
     function updateUI() {
@@ -953,56 +1541,12 @@ const app = (() => {
     };
 
     function updateItemUI(item, targetId) {
-        const oldCtrl = item.querySelector('.item-controls'); if(oldCtrl) oldCtrl.remove();
-        const oldSel = item.querySelector('select'); if(oldSel) oldSel.remove();
-        const oldRem = item.querySelector('.remove-btn'); if(oldRem) oldRem.remove();
-        const chk = item.querySelector('.m-chk'); if(chk) chk.style.display = (targetId === 'available' ? 'inline' : 'none');
-        
-        // Add Remove Button
-        const removeBtn = document.createElement("span");
-        removeBtn.className = "remove-btn";
-        removeBtn.innerHTML = "X";
-        removeBtn.title = "Rimuovi campo";
-        removeBtn.onclick = function() {
-            takeSnapshot(); // snapshot BEFORE removing
-            const field = item.getAttribute('data-field');
-            item.remove();
-            // Restore field in available list
-            if (field) {
-                const avItem = nodes.available.querySelector(`.item[data-field="${field.replace(/"/g, '&quot;')}"]`);
-                if (avItem) { avItem.style.display = ''; }
-            }
-            updateAdvisor();
-            validateStructure();
-            renderPreview();
-        };
-
-        if(targetId === 'rows') {
-            const ctrl = document.createElement("div"); ctrl.className = "item-controls";
-            // Added Sorting Select
-            ctrl.innerHTML = `
-                <select class="opt-sort" style="width:45px;" title="Ordinamento">
-                    <option value="az">A-Z</option>
-                    <option value="za">Z-A</option>
-                </select>
-                <label title="Vuoto">V<input type="checkbox" class="opt-v" checked></label>
-                <label title="Espandi">E<input type="checkbox" class="opt-e" checked></label>
-                <label title="Subtotale">S<input type="checkbox" class="opt-s" checked></label>
-                <label title="Compatta">C<input type="checkbox" class="opt-c"></label>
-                <label title="Grassetto">B<input type="checkbox" class="opt-b" checked></label>
-            `;
-            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview); 
-            item.appendChild(ctrl);
-        } else if (targetId === 'values') {
-            const ctrl = document.createElement("div"); ctrl.className = "item-controls";
-            ctrl.innerHTML = `<label title="Mostra in %"> % <input type="checkbox" class="opt-p"></label>`;
-            const s = document.createElement("select"); ["sum","count","avg","min","max"].forEach(f => { const o = document.createElement("option"); o.value = f; o.text = f; s.appendChild(o); });
-            ctrl.appendChild(s);
-            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview); 
-            item.appendChild(ctrl);
-        }
-
-        item.appendChild(removeBtn);
+        // Replace the dragged clone (from available list) with a properly structured configured item
+        const field = item.getAttribute('data-field');
+        if (!field) return;
+        const fresh = createConfiguredItem(field, targetId);
+        if (!fresh) { item.remove(); return; }
+        item.parentNode.replaceChild(fresh, item);
     }
 
     function updateRowFlags() {
@@ -1070,7 +1614,7 @@ const app = (() => {
         updateAdvisor();
         showToast(`${rawData.length.toLocaleString('it-IT')} righe e ${headers.length} colonne caricate con successo!`, 'success');
         // Take the initial snapshot (empty configuration state)
-        takeSnapshot();
+        if (fileMode === 1) takeSnapshot();
     };
 
     function renderAvailable() { 
@@ -1078,8 +1622,15 @@ const app = (() => {
         headers.forEach(h => { 
             const d = document.createElement("div"); 
             d.className = "item"; 
-            d.setAttribute('data-field', h); 
-            d.innerHTML = `<input type="checkbox" class="m-chk" value="${h.replace(/"/g, '&quot;')}"> <b>${h}</b>`; 
+            d.setAttribute('data-field', h);
+            const src = fieldSources[h];
+            let badgeHtml = '';
+            if (fileMode === 2 && src) {
+                if (src === 'JOIN') badgeHtml = `<span class="field-badge badge-join" title="Colonna usata come chiave di join">🔗</span>`;
+                else if (src === 'F1') badgeHtml = `<span class="field-badge badge-f1" title="Da File 1">F1</span>`;
+                else if (src === 'F2') badgeHtml = `<span class="field-badge badge-f2" title="Da File 2">F2</span>`;
+            }
+            d.innerHTML = `<input type="checkbox" class="m-chk" value="${h.replace(/"/g, '&quot;')}"> <span style="display:inline-flex;align-items:center;gap:4px;">${badgeHtml}<b>${h}</b></span>`; 
             nodes.available.appendChild(d); 
         }); 
     }
@@ -2138,27 +2689,44 @@ const app = (() => {
             return null;
         }
 
-        const d = document.createElement("div"); 
-        d.className = "item"; 
-        d.setAttribute('data-field', field); 
-        d.innerHTML = `<b>${field}</b>`;
-        
+        const src = fieldSources[field];
+        let badgeHtml = '';
+        if (fileMode === 2 && src) {
+            if (src === 'JOIN') badgeHtml = `<span class="field-badge badge-join" title="Chiave di join">🔗</span>`;
+            else if (src === 'F1') badgeHtml = `<span class="field-badge badge-f1" title="Da File 1">F1</span>`;
+            else if (src === 'F2') badgeHtml = `<span class="field-badge badge-f2" title="Da File 2">F2</span>`;
+        }
+
+        const d = document.createElement("div");
+        d.className = "item item-configured";
+        d.setAttribute('data-field', field);
+
+        // ── Top row: badge + name + remove button ──
+        const topRow = document.createElement("div");
+        topRow.className = "item-top-row";
+        topRow.innerHTML = `${badgeHtml}<b title="${field}">${field}</b>`;
+
         const removeBtn = document.createElement("span");
         removeBtn.className = "remove-btn";
         removeBtn.innerHTML = "X";
-        removeBtn.onclick = function() { 
-            takeSnapshot(); 
-            const field = d.getAttribute('data-field');
-            d.remove(); 
-            if (field) {
-                const avItem = nodes.available.querySelector(`.item[data-field="${field.replace(/"/g, '&quot;')}"]`);
+        removeBtn.style.flexShrink = "0";
+        removeBtn.onclick = function() {
+            takeSnapshot();
+            const f = d.getAttribute('data-field');
+            d.remove();
+            if (f) {
+                const avItem = nodes.available.querySelector(`.item[data-field="${f.replace(/"/g, '&quot;')}"]`);
                 if (avItem) avItem.style.display = '';
             }
-            updateAdvisor(); validateStructure(); renderPreview(); 
+            updateAdvisor(); validateStructure(); renderPreview();
         };
+        topRow.appendChild(removeBtn);
+        d.appendChild(topRow);
 
-        if(targetId === 'rows') {
-            const ctrl = document.createElement("div"); ctrl.className = "item-controls";
+        // ── Bottom row: controls (only for rows and values) ──
+        if (targetId === 'rows') {
+            const ctrl = document.createElement("div");
+            ctrl.className = "item-controls";
             ctrl.innerHTML = `
                 <select class="opt-sort" style="width:45px;" title="Ordinamento"><option value="az">A-Z</option><option value="za">Z-A</option></select>
                 <label title="Vuoto">V<input type="checkbox" class="opt-v" checked></label>
@@ -2167,19 +2735,19 @@ const app = (() => {
                 <label title="Compatta">C<input type="checkbox" class="opt-c"></label>
                 <label title="Grassetto">B<input type="checkbox" class="opt-b" checked></label>
             `;
-            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview); 
+            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview);
             d.appendChild(ctrl);
         } else if (targetId === 'values') {
-            const ctrl = document.createElement("div"); ctrl.className = "item-controls";
+            const ctrl = document.createElement("div");
+            ctrl.className = "item-controls";
             ctrl.innerHTML = `<label title="Mostra in %"> % <input type="checkbox" class="opt-p"></label>`;
-            const s = document.createElement("select"); 
+            const s = document.createElement("select");
             ["sum","count","avg","min","max"].forEach(f => { const o = document.createElement("option"); o.value = f; o.text = f; s.appendChild(o); });
             ctrl.appendChild(s);
-            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview); 
+            ctrl.querySelectorAll('input, select').forEach(i => i.onchange = renderPreview);
             d.appendChild(ctrl);
         }
 
-        d.appendChild(removeBtn);
         return d;
     }
 
@@ -2206,9 +2774,14 @@ const app = (() => {
 
     // ===== NORMALIZZAZIONE TESTO =====
     
+    let normTarget = 'file1'; // 'file1' | 'file2'
+    function getNormData()    { return normTarget === 'file2' ? rawData2 : rawData; }
+    function getNormHeaders() { return normTarget === 'file2' ? headers2 : headers; }
+
     // Detect column type based on sample values
     function detectColType(field) {
-        const samples = rawData.slice(0, 50).map(r => (r[field] || '').toString().trim()).filter(v => v !== '');
+        const data = getNormData();
+        const samples = data.slice(0, 50).map(r => (r[field] || '').toString().trim()).filter(v => v !== '');
         if (samples.length === 0) return 'text';
         const numCount = samples.filter(v => !isNaN(parseNumber(v))).length;
         const ratio = numCount / samples.length;
@@ -2238,15 +2811,16 @@ const app = (() => {
     function buildNormTable() {
         const tbody = document.getElementById('normTableBody');
         tbody.innerHTML = '';
-        headers.forEach(field => {
+        const activeHeaders = getNormHeaders();
+        const activeData = getNormData();
+        activeHeaders.forEach(field => {
             const type = detectColType(field);
             const typeLabel = type === 'num' ? '<span class="col-type norm-type-num">Numerico</span>' 
                             : type === 'mixed' ? '<span class="col-type norm-type-mixed">Misto</span>'
                             : '<span class="col-type norm-type-text">Testo</span>';
             
             // Get first non-empty sample value
-            const sample = rawData.map(r => (r[field] || '').toString().trim()).find(v => v !== '') || '';
-            const escapedField = field.replace(/"/g, '&quot;');
+            const sample = activeData.map(r => (r[field] || '').toString().trim()).find(v => v !== '') || '';
             const isNum = type === 'num';
 
             const tr = document.createElement('tr');
@@ -2313,11 +2887,11 @@ const app = (() => {
 
     // "Select all" helper
     window.normSelectAll = function(op) {
+        const activeData = getNormData();
         document.querySelectorAll('#normTableBody tr').forEach(tr => {
             if (op === 'none') {
                 tr.querySelectorAll('.norm-op').forEach(c => { c.checked = false; });
             } else {
-                // mutual exclusion
                 if (['upper','lower','title'].includes(op)) {
                     ['upper','lower','title'].forEach(o => {
                         const c = tr.querySelector(`.norm-op[data-op="${o}"]`);
@@ -2328,13 +2902,23 @@ const app = (() => {
                 if (target) target.checked = true;
             }
             const field = tr.getAttribute('data-field');
-            const sample = rawData.map(r => (r[field] || '').toString().trim()).find(v => v !== '') || '';
+            const sample = activeData.map(r => (r[field] || '').toString().trim()).find(v => v !== '') || '';
             updateNormPreview(tr, field, sample);
         });
     };
 
-    // Open normalization modal
+    // Open normalization modal — File 1
     document.getElementById('openNormBtn').addEventListener('click', () => {
+        normTarget = 'file1';
+        document.querySelector('#normModal .modal-header h2').textContent = '🧹 Normalizza Testo — File 1';
+        buildNormTable();
+        document.getElementById('normModal').style.display = 'block';
+    });
+
+    // Open normalization modal — File 2
+    document.getElementById('openNormBtn2').addEventListener('click', () => {
+        normTarget = 'file2';
+        document.querySelector('#normModal .modal-header h2').textContent = '🧹 Normalizza Testo — File 2';
         buildNormTable();
         document.getElementById('normModal').style.display = 'block';
     });
@@ -2348,6 +2932,7 @@ const app = (() => {
     document.getElementById('applyNormBtn').addEventListener('click', () => {
         let totalChanges = 0;
         const modifiedFields = [];
+        const activeData = getNormData();
 
         document.querySelectorAll('#normTableBody tr').forEach(tr => {
             const field = tr.getAttribute('data-field');
@@ -2355,7 +2940,7 @@ const app = (() => {
             if (Object.keys(ops).length === 0) return;
 
             let fieldChanges = 0;
-            rawData.forEach(row => {
+            activeData.forEach(row => {
                 const original = (row[field] || '').toString();
                 const normalized = applyNormOp(original, ops);
                 if (normalized !== original) {
@@ -2376,14 +2961,26 @@ const app = (() => {
             showToast('Nessun valore modificato — i dati erano già normalizzati.', 'info');
         } else {
             showToast(`✅ ${totalChanges} valori normalizzati in ${modifiedFields.length} colonne: ${modifiedFields.slice(0,3).join(', ')}${modifiedFields.length > 3 ? '...' : ''}`, 'success', 5000);
-            // Refresh mini preview and live preview
-            const mp = document.getElementById('miniPreviewTable');
-            if (mp) {
-                mp.innerHTML = '';
-                const hr = document.createElement('tr'); headers.forEach(h => hr.innerHTML += `<th>${h}</th>`); mp.appendChild(hr);
-                rawData.slice(0,3).forEach(row => { const tr = document.createElement('tr'); headers.forEach(h => tr.innerHTML += `<td>${row[h]||''}</td>`); mp.appendChild(tr); });
+            if (normTarget === 'file1') {
+                // Refresh mini preview
+                const mp = document.getElementById('miniPreviewTable');
+                if (mp) {
+                    mp.innerHTML = '';
+                    const hr = document.createElement('tr'); headers.forEach(h => hr.innerHTML += `<th>${h}</th>`); mp.appendChild(hr);
+                    rawData.slice(0,3).forEach(row => { const tr = document.createElement('tr'); headers.forEach(h => tr.innerHTML += `<td>${row[h]||''}</td>`); mp.appendChild(tr); });
+                }
+                renderPreview();
+            } else {
+                // Refresh file2 mini preview
+                const mp2 = document.getElementById('miniPreviewTable2');
+                if (mp2) {
+                    mp2.innerHTML = '';
+                    const hr2 = document.createElement('tr'); headers2.forEach(h => hr2.innerHTML += `<th>${h}</th>`); mp2.appendChild(hr2);
+                    rawData2.slice(0,3).forEach(row => { const tr = document.createElement('tr'); headers2.forEach(h => tr.innerHTML += `<td>${row[h]||''}</td>`); mp2.appendChild(tr); });
+                }
+                // Also refresh cardinality if join config is open
+                if (document.getElementById('joinConfigSection').style.display !== 'none') updateCardinalityBadge();
             }
-            renderPreview();
         }
     });
 
@@ -2447,7 +3044,7 @@ const app = (() => {
     // Wrap renderPreview to auto-snapshot after drag/change events
     // Snapshot is taken by Sortable onEnd and item changes
 
-    return { goToStep };
+    return { goToStep, selectMode, proceedFromFile1 };
 })();
 </script>
 </body>
